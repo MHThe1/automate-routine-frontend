@@ -6,11 +6,9 @@ import { ThemeMode } from "./components/ToggleTheme.jsx";
 import Footer from "./components/Footer.jsx";
 import RoutineTable from "./components/RoutineTable.jsx";
 
-
-
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
-  const [result, setResult] = useState(null);
+  const [routines, setRoutines] = useState([]);
 
   const handleInputChange = (e) => {
     setCourseCodes(e.target.value.split(",").map((code) => code.trim()));
@@ -28,7 +26,7 @@ function App() {
           },
         }
       );
-      setResult(response.data);
+      setRoutines(response.data);
     } catch (error) {
       console.error("There was an error!", error);
     }
@@ -67,17 +65,10 @@ function App() {
               </button>
             </form>
 
-            {result && (
-              <div className="mt-8">
-                <h2 className="text-xl font-bold mb-4">Generated Routine</h2>
-                <pre className="bg-gray-100 p-4 rounded-lg">
-                  {JSON.stringify(result, null, 2)}
-                </pre>
-              </div>
+            {routines.length > 0 && (
+              <RoutineTable routines={routines} />
             )}
           </div>
-
-
         </main>
         <Footer />
       </div>
