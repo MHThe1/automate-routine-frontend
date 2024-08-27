@@ -9,27 +9,43 @@ import RoutineTable from "./components/RoutineTable.jsx";
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
   const [routines, setRoutines] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const handleInputChange = (e) => {
     setCourseCodes(e.target.value.split(",").map((code) => code.trim()));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (page = 1) => {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/generate-routines/",
         courseCodes,
         {
+          params: {
+            page: page,
+            page_size: 10 // Adjust the page size if needed
+          },
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-      setRoutines(response.data);
+      setRoutines(response.data.routines);
+      setTotalPages(Math.ceil(response.data.total_count / 10)); // Assuming page_size is 10
     } catch (error) {
       console.error("There was an error!", error);
     }
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    handleSubmit(newPage); // Fetch data for the new page
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    handleSubmit(); // Fetch data for the first page when the form is submitted
   };
 
   return (
@@ -42,7 +58,7 @@ function App() {
             <h1 className="text-2xl font-bold mb-4">
               Course Routine Generator
             </h1>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleFormSubmit}>
               <div className="mb-4">
                 <label
                   htmlFor="courseCodes"
@@ -66,7 +82,26 @@ function App() {
             </form>
 
             {routines.length > 0 && (
-              <RoutineTable routines={routines} />
+              <>
+                <RoutineTable routines={routines} />
+                <div className="mt-4">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage <= 1}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2"
+                  >
+                    Previous
+                  </button>
+                  <span>Page {currentPage} of {totalPages}</span>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2"
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </main>
