@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply transition-colors duration-200;
+}
+
+
+@font-face {
+  font-family: 'SanFransicoFont';
+  src: url('/fonts/SFNSDisplay-Black.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GabrielWeissFriends';
+  src: url('/fonts/GABRWFFR.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@keyframes slide-in-from-top {
+  0% {
+    transform: translateY(-15%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
