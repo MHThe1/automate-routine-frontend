@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState } from "react";
-
 import Header from "./components/Header.jsx";
 import { ThemeMode } from "./components/ToggleTheme.jsx";
 import Footer from "./components/Footer.jsx";
@@ -8,6 +7,8 @@ import RoutineTable from "./components/RoutineTable.jsx";
 
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
+  const [courseDetails, setCourseDetails] = useState([]);
+  const [minDays, setMinDays] = useState(1); // Default minimum days
   const [routines, setRoutines] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -16,15 +17,25 @@ function App() {
     setCourseCodes(e.target.value.split(",").map((code) => code.trim()));
   };
 
+  const handleDetailsChange = (e) => {
+    setCourseDetails(e.target.value.split(",").map((detail) => detail.trim()));
+  };
+
   const handleSubmit = async (page = 1) => {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/generate-routines/",
-        courseCodes,
+        {
+          courses: courseCodes.map((code, index) => ({
+            courseCode: code,
+            section: courseDetails[index] || "",
+          })),
+        },
         {
           params: {
             page: page,
-            page_size: 10 // Adjust the page size if needed
+            page_size: 10, // Adjust the page size if needed
+            min_days: minDays, // Add min_days parameter
           },
           headers: {
             "Content-Type": "application/json",
@@ -73,6 +84,41 @@ function App() {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="courseDetails"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Enter Course Details (comma separated):
+                </label>
+                <input
+                  type="text"
+                  id="courseDetails"
+                  onChange={handleDetailsChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="minDays"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Minimum Number of Days:
+                </label>
+                <select
+                  id="minDays"
+                  value={minDays}
+                  onChange={(e) => setMinDays(parseInt(e.target.value, 10))}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                  {[2, 3, 4, 5, 6].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <button
                 type="submit"
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
@@ -92,7 +138,9 @@ function App() {
                   >
                     Previous
                   </button>
-                  <span>Page {currentPage} of {totalPages}</span>
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage >= totalPages}
