@@ -30,7 +30,8 @@ function App() {
           params: {
             page: page,
             page_size: 10, // Adjust the page size if needed
-            min_days: minDays, // Add min_days parameter
+            min_days: minDays,
+            max_days: maxDays,
           },
           headers: {
             'Content-Type': 'application/json',
@@ -68,10 +69,12 @@ function App() {
             courseCodes={courseCodes}
             courseDetails={courseDetails}
             minDays={minDays}
+            maxDays={maxDays}
             avoidTime={avoidTime}
             setCourseCodes={setCourseCodes}
             setCourseDetails={setCourseDetails}
             setMinDays={setMinDays}
+            setMaxDays={setMaxDays}
             setAvoidTime={setAvoidTime}
           />
         </main>

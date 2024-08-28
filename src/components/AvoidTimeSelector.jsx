@@ -14,22 +14,19 @@ const AvoidTimeSelector = ({ avoidTime, setAvoidTime }) => {
 
   const handleSelectChange = (selectedOptions) => {
     setAvoidTime(selectedOptions.map(option => option.value));
-    
   };
 
-  console.log(avoidTime);
-
   return (
-    <div className="mb-4 mt-4">
+    <div className="flex items-center gap-4">
       <label
         htmlFor="avoidTime"
-        className="text-gray-700 dark:text-stone-100 font-bold mb-2"
+        className="text-gray-700 dark:text-stone-100 font-bold"
       >
-        Avoid Time Periods:
+        Avoid Time:
       </label>
       <Select
         id="avoidTime"
-        className="focus:outline-none focus:ring-2 focus:ring-blue-600"
+        className="flex-grow focus:outline-none focus:ring-2 focus:ring-blue-600"
         value={timeOptions.filter(option => avoidTime.includes(option.value))}
         onChange={handleSelectChange}
         options={timeOptions}
