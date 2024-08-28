@@ -5,9 +5,11 @@ const FormComponent = ({
   courseCodes,
   courseDetails,
   minDays,
+  avoidTime,
   setCourseCodes,
   setCourseDetails,
   setMinDays,
+  setAvoidTime,
   handleFormSubmit,
 }) => {
   const [dropdownOptions, setDropdownOptions] = useState(Array(5).fill([]));
@@ -120,7 +122,7 @@ const FormComponent = ({
               onChange={(e) => handleDetailChange(index, e.target.value)}
               className="w-full px-3 py-2 border rounded-lg bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
-              <option value="">Select Course Detail</option>
+              <option value="">Select Section</option>
               {dropdownOptions[index].map((detail) => (
                 <option key={detail.id} value={detail.courseDetails}>
                   {detail.courseDetails}
@@ -149,6 +151,35 @@ const FormComponent = ({
               {[2, 3, 4, 5, 6].map((value) => (
                 <option key={value} value={value}>
                   {value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center">
+            <label
+              htmlFor="avoidTime"
+              className="block text-gray-700 dark:text-stone-100 font-bold mb-2 mr-4"
+            >
+              Avoid Time:
+            </label>
+            <select
+              id="avoidTime"
+              value={avoidTime}
+              onChange={(e) => setAvoidTime(e.target.value)}
+              className="w-auto px-5 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            >
+              <option value="">Select Time Period</option>
+              {[
+                "08:00 AM-09:20 AM",
+                "09:30 AM-10:50 AM",
+                "11:00 AM-12:20 PM",
+                "12:30 PM-01:50 PM",
+                "02:00 PM-03:20 PM",
+                "03:30 PM-04:50 PM",
+                "05:00 PM-06:20 PM",
+              ].map((time, index) => (
+                <option key={index} value={time}>
+                  {time}
                 </option>
               ))}
             </select>

@@ -9,6 +9,7 @@ function App() {
   const [courseCodes, setCourseCodes] = useState([]);
   const [courseDetails, setCourseDetails] = useState([]);
   const [minDays, setMinDays] = useState(3); // Default minimum days
+  const [avoidTime, setAvoidTime] = useState("");
   const [routines, setRoutines] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -28,6 +29,7 @@ function App() {
             page: page,
             page_size: 10, // Adjust the page size if needed
             min_days: minDays, // Add min_days parameter
+            avoid_time: avoidTime, // Add avoid_time parameter
           },
           headers: {
             'Content-Type': 'application/json',
@@ -65,9 +67,11 @@ function App() {
             courseCodes={courseCodes}
             courseDetails={courseDetails}
             minDays={minDays}
+            avoidTime={avoidTime}
             setCourseCodes={setCourseCodes}
             setCourseDetails={setCourseDetails}
             setMinDays={setMinDays}
+            setAvoidTime={setAvoidTime}
           />
         </main>
         <Footer />
