@@ -14,8 +14,12 @@ function App() {
   const [routines, setRoutines] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (page = 1) => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await axios.post(
         'http://192.168.0.155:8000/generate-routines/',
@@ -29,7 +33,7 @@ function App() {
         {
           params: {
             page: page,
-            page_size: 10, // Adjust the page size if needed
+            page_size: 10,
             min_days: minDays,
             max_days: maxDays,
           },
@@ -38,21 +42,27 @@ function App() {
           },
         }
       );
-      setRoutines(response.data.routines);
-      setTotalPages(Math.ceil(response.data.total_count / 10)); // Assuming page_size is 10
+      if (response.data.routines.length === 0) {
+        setError('No routines can be generated for the given criteria.');
+      } else {
+        setRoutines(response.data.routines);
+        setTotalPages(Math.ceil(response.data.total_count / 10));
+      }
     } catch (error) {
-      console.error('There was an error!', error);
+      setError('There was an error fetching the data.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    handleSubmit(newPage); // Fetch data for the new page
+    handleSubmit(newPage);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    handleSubmit(); // Fetch data for the first page when the form is submitted
+    handleSubmit();
   };
 
   return (
@@ -76,6 +86,8 @@ function App() {
             setMinDays={setMinDays}
             setMaxDays={setMaxDays}
             setAvoidTime={setAvoidTime}
+            loading={loading}
+            error={error}
           />
         </main>
         <Footer />

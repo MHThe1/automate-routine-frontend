@@ -3,10 +3,25 @@ import RoutineTable from './RoutineTable';
 import FormComponent from './FormComponent';
 import PaginationComponent from './PaginationComponent';
 
-const MainContent = ({ routines, currentPage, totalPages, 
-                      handlePageChange, handleFormSubmit, courseCodes, courseDetails, 
-                      minDays, setCourseCodes, setCourseDetails, setMinDays,
-                      maxDays, setMaxDays, avoidTime, setAvoidTime }) => {
+const MainContent = ({
+  routines,
+  currentPage,
+  totalPages,
+  handlePageChange,
+  handleFormSubmit,
+  courseCodes,
+  courseDetails,
+  minDays,
+  maxDays,
+  avoidTime,
+  setCourseCodes,
+  setCourseDetails,
+  setMinDays,
+  setMaxDays,
+  setAvoidTime,
+  loading,
+  error,
+}) => {
   return (
     <div className="container mx-auto p-4">
       <FormComponent
@@ -22,7 +37,17 @@ const MainContent = ({ routines, currentPage, totalPages,
         setAvoidTime={setAvoidTime}
         handleFormSubmit={handleFormSubmit}
       />
-      {routines.length > 0 && (
+      {loading && (
+        <div className="mt-4 text-center text-gray-700 dark:text-gray-300">
+          <p className="text-xl text-green-600 font-semibold">Cooking up some routines for you...<br/> Please wait...</p>
+        </div>
+      )}
+      {error && (
+        <div className="mt-4 text-center text-red-600 dark:text-red-400">
+          <p className="text-xl font-semibold">{error}</p>
+        </div>
+      )}
+      {routines.length > 0 && !loading && !error && (
         <div className='mt-4'>
           <RoutineTable routines={routines} />
           <PaginationComponent
