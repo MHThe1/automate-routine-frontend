@@ -1,8 +1,15 @@
 import React from "react";
 import PaginationComponent from "./PaginationComponent";
+import html2canvas from "html2canvas";
+import RoutineSnap from "./RoutineSnap";
 
-
-const RoutineTable = ({ routines, currentPage, totalPages, totalRoutines, handlePageChange }) => {
+const RoutineTable = ({
+  routines,
+  currentPage,
+  totalPages,
+  totalRoutines,
+  handlePageChange,
+}) => {
   const days = [
     "Sunday",
     "Monday",
@@ -10,7 +17,7 @@ const RoutineTable = ({ routines, currentPage, totalPages, totalRoutines, handle
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday"
+    "Saturday",
   ];
 
   const timeSlots = [
@@ -74,20 +81,51 @@ const RoutineTable = ({ routines, currentPage, totalPages, totalRoutines, handle
     return `${hours} hours ${minutesRemainder} minutes`;
   };
 
+  const handleTakeScreenshot = () => {
+    document.getElementById("routine-snap").classList.remove("hidden");
+
+    const element = document.getElementById("routine-snap");
+    if (!element) {
+      return;
+    }
+    html2canvas(element)
+      .then((canvas) => {
+        let image = canvas.toDataURL("image/jpeg");
+        const a = document.createElement("a");
+        a.href = image;
+        a.download = "Routinebracu.jpeg";
+        a.click();
+
+        document.getElementById("routine-snap").classList.add("hidden");
+      })
+      .catch((err) => {
+        console.error("Couldn't Download!");
+      });
+  };
+  
+
   return (
     <div className="mt-4">
       <div className="mb-4 px-4 py-4 bg-white dark:bg-gray-900 text-slate-900 dark:text-stone-100 text-center rounded-lg shadow-md">
-        <p className="font-quicksand font-bold text-xl text-green-600 dark:text-green-400">Cooked up {totalRoutines} routines for you!</p>
+        <p className="font-quicksand font-bold text-xl text-green-600 dark:text-green-400">
+          Cooked up {totalRoutines} routines for you!
+        </p>
         <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
       </div>
       {routines.map((routine, index) => (
-        <div key={index} className="overflow-x-auto mb-6 border-dashed border-2 border-gray-400 dark:border-gray-200 rounded-lg">
+        <div
+          key={index}
+          className="overflow-x-auto mb-6 border-dashed border-2 border-gray-400 dark:border-gray-200 rounded-lg"
+        >
           <p className="text-md text-center text-slate-900 dark:text-stone-100 font-medium my-4">
-            <span className="text-red-400 font-bold">#r{(currentPage - 1)*10 + index + 1}</span> - {minutesToHours(routine.total_duration)} weekly, {" "}
+            <span className="text-red-400 font-bold">
+              #r{(currentPage - 1) * 10 + index + 1}
+            </span>{" "}
+            - {minutesToHours(routine.total_duration)} weekly,{" "}
             {routine.total_days} days
           </p>
           <table className="min-w-full divide-y divide-gray-200">
@@ -126,6 +164,15 @@ const RoutineTable = ({ routines, currentPage, totalPages, totalRoutines, handle
                 ))}
             </tbody>
           </table>
+          <div className="m-4 flex justify-center space-x-4">
+          <button
+            onClick={handleTakeScreenshot}
+            className="bg-green-500 hover:bg-green-800 text-black hover:text-white font-bold py-2 px-4 rounded shadow-md transition-colors duration-300"
+          >
+            Download Routine
+          </button>
+          </div>
+          <RoutineSnap routine={routine} />
         </div>
       ))}
     </div>
