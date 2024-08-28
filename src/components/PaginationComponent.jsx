@@ -2,7 +2,7 @@ import React from 'react';
 
 const PaginationComponent = ({ currentPage, totalPages, handlePageChange }) => {
   return (
-    <div className="mt-4">
+    <div className="mt-4 text-center">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage <= 1}
@@ -10,7 +10,7 @@ const PaginationComponent = ({ currentPage, totalPages, handlePageChange }) => {
       >
         Previous
       </button>
-      <span>
+      <span className="text-center text-sm text-gray-500 dark:text-stone-100">
         Page {currentPage} of {totalPages}
       </span>
       <button

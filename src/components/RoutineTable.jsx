@@ -66,42 +66,41 @@ const RoutineTable = ({ routines }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto mt-10">
       {routines.map((routine, index) => (
-        <div key={index} className="mb-6">
-          <h2 className="text-xl font-bold mb-2">Routine {index + 1}</h2>
-          <p className="text-md font-medium mb-2">
-            Total Duration: {routine.total_duration} minutes, Total Days:{" "}
-            {routine.total_days}
+        <div key={index} className="mb-6 overflow-x-auto border-dashed border-2 border-gray-200 rounded-lg">
+          <p className="text-md text-center text-slate-900 dark:text-stone-100 font-medium my-4">
+            {routine.total_duration} minutes, {" "}
+            {routine.total_days} days
           </p>
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-100 uppercase tracking-wider">
                   Time
                 </th>
                 {days.map((day, idx) => (
                   <th
                     key={idx}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-bold text-gray-400 dark:text-stone-100 uppercase tracking-wider"
                   >
                     {day}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-slate-900 text-black dark:text-stone-100 divide-y divide-gray-200">
               {timeSlots
                 .filter((time) => rowHasClassData(routine, time)) // Only render rows with class data
                 .map((time, rowIndex) => (
                   <tr key={rowIndex}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-stone-100 font-bold">
                       {time}
                     </td>
                     {days.map((day, colIndex) => (
                       <td
                         key={colIndex}
-                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-stone-100 font-bold"
                       >
                         {getCourseDetails(day, time, routine)}
                       </td>
