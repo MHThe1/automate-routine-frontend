@@ -9,11 +9,13 @@ const FormComponent = ({
   minDays,
   maxDays,
   avoidTime,
+  avoidDay,
   setCourseCodes,
   setCourseDetails,
   setMinDays,
   setMaxDays,
   setAvoidTime,
+  setAvoidDay,
   handleFormSubmit,
   isEditing,
   setIsEditing,
@@ -56,7 +58,7 @@ const FormComponent = ({
 
   const handleCodeChange = async (index, value) => {
     const capitalizedValue = value.toUpperCase().trim();
-    
+
     const updatedCodes = [...courseCodes];
     updatedCodes[index] = capitalizedValue;
     setCourseCodes(updatedCodes);
@@ -95,7 +97,6 @@ const FormComponent = ({
     setCourseDetails(updatedDetails);
     setIsEditing(true);
   };
-
 
   return (
     <div className="mb-4 px-4 py-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
@@ -146,8 +147,8 @@ const FormComponent = ({
         </div>
 
         <div className="mb-4 mt-4 flex flex-col items-center">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-4xl">
-            <div className="flex items-center gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-4xl">
+            <div className="flex items-center gap-4 col-span-2 sm:col-span-1 lg:col-span-1">
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="minDays"
@@ -171,6 +172,8 @@ const FormComponent = ({
                   ))}
                 </select>
               </div>
+            </div>
+            <div className="flex items-center gap-4 col-span-2 sm:col-span-1 lg:col-span-1">
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="maxDays"
@@ -195,22 +198,28 @@ const FormComponent = ({
                 </select>
               </div>
             </div>
-            <AvoidTimeSelector
-              avoidTime={avoidTime}
-              setAvoidTime={setAvoidTime}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-            />
+            <div className="col-span-2 lg:col-span-2 flex items-center gap-4">
+              <AvoidTimeSelector
+                avoidTime={avoidTime}
+                setAvoidTime={setAvoidTime}
+                avoidDay={avoidDay}
+                setAvoidDay={setAvoidDay}
+                isEditing={isEditing}
+                setIsEditing={setIsEditing}
+              />
+            </div>
           </div>
           <button
             type="submit"
             className="mt-10 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 flex items-center justify-center"
           >
             <span className="relative flex items-center">
-              {isEditing && <span className="absolute flex h-3 w-3 mr-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-400"></span>
-              </span>}
+              {isEditing && (
+                <span className="absolute flex h-3 w-3 mr-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-400"></span>
+                </span>
+              )}
               <span className="pl-4">Generate Routine</span>
             </span>
           </button>

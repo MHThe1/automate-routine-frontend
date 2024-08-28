@@ -11,6 +11,7 @@ function App() {
   const [minDays, setMinDays] = useState(2);
   const [maxDays, setMaxDays] = useState(6);
   const [avoidTime, setAvoidTime] = useState([]);
+  const [avoidDay, setAvoidDay] = useState([]);
   const [routines, setRoutines] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -30,7 +31,8 @@ function App() {
             courseCode: code,
             section: courseDetails[index] || '',
           })),
-          avoid_time: avoidTime
+          avoid_time: avoidTime,
+          avoid_day: avoidDay,
         },
         {
           params: {
@@ -83,11 +85,13 @@ function App() {
             minDays={minDays}
             maxDays={maxDays}
             avoidTime={avoidTime}
+            avoidDay={avoidDay}
             setCourseCodes={setCourseCodes}
             setCourseDetails={setCourseDetails}
             setMinDays={setMinDays}
             setMaxDays={setMaxDays}
             setAvoidTime={setAvoidTime}
+            setAvoidDay={setAvoidDay}
             loading={loading}
             error={error}
             isEditing={isEditing}
