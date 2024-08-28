@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import AvoidTimeSelector from "./AvoidTimeSelector";
+
 const FormComponent = ({
   courseCodes,
   courseDetails,
   minDays,
+  maxDays,
   avoidTime,
   setCourseCodes,
   setCourseDetails,
   setMinDays,
+  setMaxDays,
   setAvoidTime,
   handleFormSubmit,
 }) => {
@@ -138,7 +142,7 @@ const FormComponent = ({
           <div className="flex items-center">
             <label
               htmlFor="minDays"
-              className="block text-gray-700 dark:text-stone-100 font-bold mb-2 mr-4"
+              className="block text-gray-700 dark:text-stone-100 font-bold mb-2 mr-1"
             >
               Minimum Days:
             </label>
@@ -154,36 +158,26 @@ const FormComponent = ({
                 </option>
               ))}
             </select>
-          </div>
-          <div className="flex items-center">
             <label
-              htmlFor="avoidTime"
-              className="block text-gray-700 dark:text-stone-100 font-bold mb-2 mr-4"
+              htmlFor="minDays"
+              className="block text-gray-700 dark:text-stone-100 font-bold mb-2 ml-2 mr-1"
             >
-              Avoid Time:
+              Maximum Days:
             </label>
             <select
-              id="avoidTime"
-              value={avoidTime}
-              onChange={(e) => setAvoidTime(e.target.value)}
+              id="maxDays"
+              value={maxDays}
+              onChange={(e) => setMaxDays(parseInt(e.target.value, 10))}
               className="w-auto px-5 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
-              <option value="">Select Time Period</option>
-              {[
-                "08:00 AM-09:20 AM",
-                "09:30 AM-10:50 AM",
-                "11:00 AM-12:20 PM",
-                "12:30 PM-01:50 PM",
-                "02:00 PM-03:20 PM",
-                "03:30 PM-04:50 PM",
-                "05:00 PM-06:20 PM",
-              ].map((time, index) => (
-                <option key={index} value={time}>
-                  {time}
+              {[3, 4, 5, 6].map((value) => (
+                <option key={value} value={value}>
+                  {value}
                 </option>
               ))}
             </select>
           </div>
+          <AvoidTimeSelector avoidTime={avoidTime} setAvoidTime={setAvoidTime} />
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"

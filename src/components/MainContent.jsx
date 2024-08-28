@@ -6,17 +6,19 @@ import PaginationComponent from './PaginationComponent';
 const MainContent = ({ routines, currentPage, totalPages, 
                       handlePageChange, handleFormSubmit, courseCodes, courseDetails, 
                       minDays, setCourseCodes, setCourseDetails, setMinDays,
-                      avoidTime, setAvoidTime }) => {
+                      maxDays, setMaxDays, avoidTime, setAvoidTime }) => {
   return (
     <div className="container mx-auto p-4">
       <FormComponent
         courseCodes={courseCodes}
         courseDetails={courseDetails}
         minDays={minDays}
+        maxDays={maxDays}
         avoidTime={avoidTime}
         setCourseCodes={setCourseCodes}
         setCourseDetails={setCourseDetails}
         setMinDays={setMinDays}
+        setMaxDays={setMaxDays}
         setAvoidTime={setAvoidTime}
         handleFormSubmit={handleFormSubmit}
       />
