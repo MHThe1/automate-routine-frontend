@@ -1,7 +1,7 @@
 import React from "react";
 import Select from "react-select";
 
-const AvoidTimeSelector = ({ avoidTime, setAvoidTime }) => {
+const AvoidTimeSelector = ({ avoidTime, setAvoidTime, isEditing, setIsEditing }) => {
   const timeOptions = [
     { value: "08:00 AM-09:20 AM", label: "08:00 AM-09:20 AM" },
     { value: "09:30 AM-10:50 AM", label: "09:30 AM-10:50 AM" },
@@ -14,6 +14,7 @@ const AvoidTimeSelector = ({ avoidTime, setAvoidTime }) => {
 
   const handleSelectChange = (selectedOptions) => {
     setAvoidTime(selectedOptions.map(option => option.value));
+    setIsEditing(true);
   };
 
   return (

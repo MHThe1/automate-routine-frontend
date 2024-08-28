@@ -35,8 +35,8 @@ const RoutineTable = ({ routines }) => {
     return schedules;
   };
 
-  const getFormattedText = (courseDetails, roomNo) => {
-    return `${courseDetails}<br />${roomNo}`;
+  const getFormattedText = (courseDetails, initial, roomNo) => {
+    return `${courseDetails}<br />[${initial}] ${roomNo}`;
   };
 
   const getCourseDetails = (day, time, routine) => {
@@ -50,6 +50,7 @@ const RoutineTable = ({ routines }) => {
           ) {
             const formattedText = getFormattedText(
               section.courseDetails,
+              section.empShortName,
               schedule.room
             );
             return <div dangerouslySetInnerHTML={{ __html: formattedText }} />;
@@ -65,24 +66,30 @@ const RoutineTable = ({ routines }) => {
     return days.some((day) => getCourseDetails(day, time, routine) !== "");
   };
 
+  const minutesToHours = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const minutesRemainder = minutes % 60;
+    return `${hours} hours ${minutesRemainder} minutes`;
+  };
+
   return (
-    <div className="overflow-x-auto mt-10">
+    <div className="mt-10">
       {routines.map((routine, index) => (
-        <div key={index} className="mb-6 overflow-x-auto border-dashed border-2 border-gray-200 rounded-lg">
+        <div key={index} className="overflow-x-auto mb-6 border-dashed border-2 border-gray-400 dark:border-gray-200 rounded-lg">
           <p className="text-md text-center text-slate-900 dark:text-stone-100 font-medium my-4">
-            {routine.total_duration} minutes, {" "}
+            {minutesToHours(routine.total_duration)} weekly, {" "}
             {routine.total_days} days
           </p>
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-stone-100 uppercase tracking-wider">
                   Time
                 </th>
                 {days.map((day, idx) => (
                   <th
                     key={idx}
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-400 dark:text-stone-100 uppercase tracking-wider"
+                    className="px-6 py-3 text-center text-xs font-bold text-gray-400 dark:text-stone-100 uppercase tracking-wider"
                   >
                     {day}
                   </th>
@@ -100,7 +107,7 @@ const RoutineTable = ({ routines }) => {
                     {days.map((day, colIndex) => (
                       <td
                         key={colIndex}
-                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-stone-100 font-bold"
+                        className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500 dark:text-stone-100 font-bold"
                       >
                         {getCourseDetails(day, time, routine)}
                       </td>

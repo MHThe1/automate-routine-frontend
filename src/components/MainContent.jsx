@@ -21,6 +21,8 @@ const MainContent = ({
   setAvoidTime,
   loading,
   error,
+  isEditing,
+  setIsEditing,
 }) => {
   return (
     <div className="container mx-auto p-4">
@@ -36,6 +38,8 @@ const MainContent = ({
         setMaxDays={setMaxDays}
         setAvoidTime={setAvoidTime}
         handleFormSubmit={handleFormSubmit}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
       />
       {loading && (
         <div className="mt-4 text-center text-gray-700 dark:text-gray-300">

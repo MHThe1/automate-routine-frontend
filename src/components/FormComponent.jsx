@@ -15,6 +15,8 @@ const FormComponent = ({
   setMaxDays,
   setAvoidTime,
   handleFormSubmit,
+  isEditing,
+  setIsEditing,
 }) => {
   const [dropdownOptions, setDropdownOptions] = useState(Array(5).fill([]));
   const [suggestions, setSuggestions] = useState(Array(5).fill([]));
@@ -53,9 +55,12 @@ const FormComponent = ({
   }, [courseCodes]);
 
   const handleCodeChange = async (index, value) => {
+    const capitalizedValue = value.toUpperCase().trim();
+    
     const updatedCodes = [...courseCodes];
-    updatedCodes[index] = value;
+    updatedCodes[index] = capitalizedValue;
     setCourseCodes(updatedCodes);
+    setIsEditing(true);
 
     if (value.trim() !== "") {
       try {
@@ -88,7 +93,9 @@ const FormComponent = ({
     const updatedDetails = [...courseDetails];
     updatedDetails[index] = value;
     setCourseDetails(updatedDetails);
+    setIsEditing(true);
   };
+
 
   return (
     <div className="mb-4 px-4 py-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
@@ -151,7 +158,10 @@ const FormComponent = ({
                 <select
                   id="minDays"
                   value={minDays}
-                  onChange={(e) => setMinDays(parseInt(e.target.value, 10))}
+                  onChange={(e) => {
+                    setMinDays(parseInt(e.target.value, 10));
+                    setIsEditing(true);
+                  }}
                   className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   {[2, 3, 4, 5, 6].map((value) => (
@@ -171,7 +181,10 @@ const FormComponent = ({
                 <select
                   id="maxDays"
                   value={maxDays}
-                  onChange={(e) => setMaxDays(parseInt(e.target.value, 10))}
+                  onChange={(e) => {
+                    setMaxDays(parseInt(e.target.value, 10));
+                    setIsEditing(true);
+                  }}
                   className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   {[2, 3, 4, 5, 6].map((value) => (
@@ -185,13 +198,21 @@ const FormComponent = ({
             <AvoidTimeSelector
               avoidTime={avoidTime}
               setAvoidTime={setAvoidTime}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
             />
           </div>
           <button
             type="submit"
-            className="mt-10 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="mt-10 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 flex items-center justify-center"
           >
-            Generate Routine
+            <span className="relative flex items-center">
+              {isEditing && <span className="absolute flex h-3 w-3 mr-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-400"></span>
+              </span>}
+              <span className="pl-4">Generate Routine</span>
+            </span>
           </button>
         </div>
       </form>

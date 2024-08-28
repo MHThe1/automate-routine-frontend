@@ -8,7 +8,7 @@ import { ThemeMode } from './components/ToggleTheme';
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
   const [courseDetails, setCourseDetails] = useState([]);
-  const [minDays, setMinDays] = useState(3);
+  const [minDays, setMinDays] = useState(2);
   const [maxDays, setMaxDays] = useState(6);
   const [avoidTime, setAvoidTime] = useState([]);
   const [routines, setRoutines] = useState([]);
@@ -16,10 +16,12 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleSubmit = async (page = 1) => {
     setLoading(true);
     setError(null);
+    setIsEditing(false);
     try {
       const response = await axios.post(
         'http://192.168.0.155:8000/generate-routines/',
@@ -88,6 +90,8 @@ function App() {
             setAvoidTime={setAvoidTime}
             loading={loading}
             error={error}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
           />
         </main>
         <Footer />
