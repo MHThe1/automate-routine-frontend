@@ -18,6 +18,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [totalRoutines, setTotalRoutines] = useState(0);
 
   const handleSubmit = async (page = 1) => {
     setLoading(true);
@@ -51,6 +52,7 @@ function App() {
       } else {
         setRoutines(response.data.routines);
         setTotalPages(Math.ceil(response.data.total_count / 10));
+        setTotalRoutines(response.data.total_count);
       }
     } catch (error) {
       setError('There was an error fetching the data.');
@@ -78,6 +80,7 @@ function App() {
             routines={routines}
             currentPage={currentPage}
             totalPages={totalPages}
+            totalRoutines={totalRoutines}
             handlePageChange={handlePageChange}
             handleFormSubmit={handleFormSubmit}
             courseCodes={courseCodes}

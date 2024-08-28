@@ -7,6 +7,7 @@ const MainContent = ({
   routines,
   currentPage,
   totalPages,
+  totalRoutines,
   handlePageChange,
   handleFormSubmit,
   courseCodes,
@@ -57,7 +58,12 @@ const MainContent = ({
       )}
       {routines.length > 0 && !loading && !error && (
         <div className='mt-4'>
-          <RoutineTable routines={routines} />
+          <RoutineTable routines={routines} 
+            totalRoutines={totalRoutines} 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}

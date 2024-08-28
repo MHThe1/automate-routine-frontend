@@ -6,7 +6,7 @@ const PaginationComponent = ({ currentPage, totalPages, handlePageChange }) => {
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2"
+        className="px-4 py-2 bg-slate-600 text-white hover:bg-blue-300 hover:text-black rounded-lg mr-2"
       >
         Previous
       </button>
@@ -16,7 +16,7 @@ const PaginationComponent = ({ currentPage, totalPages, handlePageChange }) => {
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2"
+        className="px-4 py-2 bg-slate-600 text-white hover:bg-blue-300 hover:text-black rounded-lg ml-2"
       >
         Next
       </button>

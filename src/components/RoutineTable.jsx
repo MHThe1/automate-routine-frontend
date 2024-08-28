@@ -1,6 +1,8 @@
 import React from "react";
+import PaginationComponent from "./PaginationComponent";
 
-const RoutineTable = ({ routines }) => {
+
+const RoutineTable = ({ routines, currentPage, totalPages, totalRoutines, handlePageChange }) => {
   const days = [
     "Sunday",
     "Monday",
@@ -73,11 +75,19 @@ const RoutineTable = ({ routines }) => {
   };
 
   return (
-    <div className="mt-10">
+    <div className="mt-4">
+      <div className="mb-4 px-4 py-4 bg-white dark:bg-gray-900 text-slate-900 dark:text-stone-100 text-center rounded-lg shadow-md">
+        <p className="font-quicksand font-bold text-xl text-green-600 dark:text-green-400">Cooked up {totalRoutines} routines for you!</p>
+        <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
+      </div>
       {routines.map((routine, index) => (
         <div key={index} className="overflow-x-auto mb-6 border-dashed border-2 border-gray-400 dark:border-gray-200 rounded-lg">
           <p className="text-md text-center text-slate-900 dark:text-stone-100 font-medium my-4">
-            {minutesToHours(routine.total_duration)} weekly, {" "}
+            <span className="text-red-400 font-bold">#r{(currentPage - 1)*10 + index + 1}</span> - {minutesToHours(routine.total_duration)} weekly, {" "}
             {routine.total_days} days
           </p>
           <table className="min-w-full divide-y divide-gray-200">
