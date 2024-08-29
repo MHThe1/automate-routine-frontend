@@ -20,13 +20,15 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [totalRoutines, setTotalRoutines] = useState(0);
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (page = 1) => {
     setLoading(true);
     setError(null);
     setIsEditing(false);
     try {
       const response = await axios.post(
-        'http://192.168.0.155:8000/generate-routines/',
+        `${apiUrl}/generate-routines/`,
         {
           courses: courseCodes.map((code, index) => ({
             courseCode: code,

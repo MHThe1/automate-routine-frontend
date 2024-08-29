@@ -3,6 +3,8 @@ import axios from "axios";
 
 import AvoidTimeSelector from "./AvoidTimeSelector";
 
+const NUM_INPUTS = 4;
+
 const FormComponent = ({
   courseCodes,
   courseDetails,
@@ -20,8 +22,10 @@ const FormComponent = ({
   isEditing,
   setIsEditing,
 }) => {
-  const [dropdownOptions, setDropdownOptions] = useState(Array(5).fill([]));
-  const [suggestions, setSuggestions] = useState(Array(5).fill([]));
+  const [dropdownOptions, setDropdownOptions] = useState(Array(NUM_INPUTS).fill([]));
+  const [suggestions, setSuggestions] = useState(Array(NUM_INPUTS).fill([]));
+
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchCourseDetails = async (index, code) => {
@@ -35,9 +39,7 @@ const FormComponent = ({
       }
 
       try {
-        const response = await axios.get(
-          `http://192.168.0.155:8000/sections/${code.trim()}/`
-        );
+        const response = await axios.get(`${apiUrl}/sections/${code.trim()}/`);
         setDropdownOptions((prev) => {
           const newOptions = [...prev];
           newOptions[index] = response.data;
@@ -66,9 +68,7 @@ const FormComponent = ({
 
     if (value.trim() !== "") {
       try {
-        const response = await axios.get(
-          `http://192.168.0.155:8000/course-code-suggestions/?q=${value}`
-        );
+        const response = await axios.get(`${apiUrl}/course-code-suggestions/?q=${value}`);
         setSuggestions((prev) => {
           const newSuggestions = [...prev];
           newSuggestions[index] = response.data;
@@ -101,8 +101,8 @@ const FormComponent = ({
   return (
     <div className="mb-4 px-4 py-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
       <form onSubmit={handleFormSubmit}>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {Array.from({ length: 5 }).map((_, index) => (
+        <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-${NUM_INPUTS} gap-4`}>
+          {Array.from({ length: NUM_INPUTS }).map((_, index) => (
             <div key={index} className="mb-2">
               <label
                 htmlFor={`courseCode${index}`}

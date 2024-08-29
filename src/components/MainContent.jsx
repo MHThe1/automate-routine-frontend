@@ -47,7 +47,7 @@ const MainContent = ({
         setIsEditing={setIsEditing}
       />
       {loading && (
-        <div className="mt-4 text-center text-gray-700 dark:text-gray-300">
+        <div className="mt-4 text-center animate-pulse text-gray-700 dark:text-gray-300">
           <p className="text-xl text-green-600 font-semibold">Cooking up some routines for you...<br/> Please wait...</p>
         </div>
       )}
