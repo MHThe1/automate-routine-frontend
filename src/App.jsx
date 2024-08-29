@@ -5,6 +5,8 @@ import Footer from './components/Footer';
 import MainContent from './components/MainContent';
 import { ThemeMode } from './components/ToggleTheme';
 
+import { Analytics } from "@vercel/analytics/react"
+
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
   const [courseDetails, setCourseDetails] = useState([]);
@@ -104,6 +106,7 @@ function App() {
           />
         </main>
         <Footer />
+        <Analytics />
       </div>
     </div>
   );
