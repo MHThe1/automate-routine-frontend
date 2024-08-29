@@ -6,12 +6,13 @@ import MainContent from './components/MainContent';
 import { ThemeMode } from './components/ToggleTheme';
 
 import { Analytics } from "@vercel/analytics/react"
+import './index.css';
 
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
   const [courseDetails, setCourseDetails] = useState([]);
   const [minDays, setMinDays] = useState(2);
-  const [maxDays, setMaxDays] = useState(6);
+  const [maxDays, setMaxDays] = useState(5);
   const [avoidTime, setAvoidTime] = useState([]);
   const [avoidDay, setAvoidDay] = useState([]);
   const [routines, setRoutines] = useState([]);

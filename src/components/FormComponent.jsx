@@ -1,7 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 import AvoidTimeSelector from "./AvoidTimeSelector";
+import GenerateRoutineButton from "./GenerateRoutineButton";
 
 const NUM_INPUTS = 4;
 
@@ -22,7 +34,9 @@ const FormComponent = ({
   isEditing,
   setIsEditing,
 }) => {
-  const [dropdownOptions, setDropdownOptions] = useState(Array(NUM_INPUTS).fill([]));
+  const [dropdownOptions, setDropdownOptions] = useState(
+    Array(NUM_INPUTS).fill([])
+  );
   const [suggestions, setSuggestions] = useState(Array(NUM_INPUTS).fill([]));
 
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -56,7 +70,7 @@ const FormComponent = ({
     };
 
     courseCodes.forEach((code, index) => fetchCourseDetails(index, code));
-  }, [courseCodes]);
+  }, [courseCodes, apiUrl]);
 
   const handleCodeChange = async (index, value) => {
     const capitalizedValue = value.toUpperCase().trim();
@@ -68,7 +82,9 @@ const FormComponent = ({
 
     if (value.trim() !== "") {
       try {
-        const response = await axios.get(`${apiUrl}/course-code-suggestions/?q=${value}`);
+        const response = await axios.get(
+          `${apiUrl}/course-code-suggestions/?q=${value}`
+        );
         setSuggestions((prev) => {
           const newSuggestions = [...prev];
           newSuggestions[index] = response.data;
@@ -99,106 +115,128 @@ const FormComponent = ({
   };
 
   return (
-    <div className="mb-4 px-4 py-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto p-8 space-y-10 dark:bg-gray-900 bg-slate-300 dark:text-gray-100 text-black rounded-lg shadow-2xl"
+    >
       <form onSubmit={handleFormSubmit}>
-        <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-${NUM_INPUTS} gap-4`}>
-          {Array.from({ length: NUM_INPUTS }).map((_, index) => (
-            <div key={index} className="mb-2">
-              <label
-                htmlFor={`courseCode${index}`}
-                className="block text-gray-700 dark:text-stone-100 font-bold mb-2"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-semibold text-blue-600 dark:text-purple-300">
+              Course Selection
+            </h2>
+            {Array.from({ length: NUM_INPUTS }).map((_, index) => (
+              <motion.div
+                key={index}
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: index * 0.1 }}
+                className="grid grid-cols-2 gap-4"
               >
-                Course:
-              </label>
-              <input
-                type="text"
-                id={`courseCode${index}`}
-                value={courseCodes[index] || ""}
-                onChange={(e) => handleCodeChange(index, e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                list={`courseCodeSuggestions${index}`}
-              />
-              <datalist id={`courseCodeSuggestions${index}`}>
-                {suggestions[index].map((suggestion, idx) => (
-                  <option key={idx} value={suggestion} />
-                ))}
-              </datalist>
-              <label
-                htmlFor={`courseDetails${index}`}
-                className="block text-gray-700 dark:text-stone-100 font-bold mb-2 mt-2"
-              >
-                Section:
-              </label>
-              <select
-                id={`courseDetails${index}`}
-                value={courseDetails[index] || ""}
-                onChange={(e) => handleDetailChange(index, e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-blue-600"
-              >
-                <option value="">Select Section</option>
-                {dropdownOptions[index].map((detail) => (
-                  <option key={detail.id} value={detail.courseDetails}>
-                    {detail.courseDetails}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor={`courseCode${index}`}
+                    className="text-black dark:text-gray-300"
+                  >
+                    Course {index + 1}
+                  </Label>
+                  <Input
+                    type="text"
+                    id={`courseCode${index}`}
+                    value={courseCodes[index] || ""}
+                    onChange={(e) => handleCodeChange(index, e.target.value)}
+                    className="bg-slate-100 dark:bg-gray-800 border-gray-700"
+                    list={`courseCodeSuggestions${index}`}
+                  />
+                  <datalist id={`courseCodeSuggestions${index}`}>
+                    {suggestions[index].map((suggestion, idx) => (
+                      <option key={idx} value={suggestion} />
+                    ))}
+                  </datalist>
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor={`courseDetails${index}`}
+                    className="text-gray-300"
+                  >
+                    Section
+                  </Label>
+                  <Select
+                    value={courseDetails[index] || ""}
+                    onValueChange={(value) => handleDetailChange(index, value)}
+                  >
+                    <SelectTrigger
+                      id={`courseDetails${index}`}
+                      className="bg-slate-100 dark:bg-gray-800 border-gray-700"
+                    >
+                      <SelectValue placeholder="Select Section" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-100 dark:bg-slate-600 border-gray-700">
+                      {dropdownOptions[index].map((detail) => (
+                        <SelectItem
+                          key={detail.id}
+                          value={detail.courseDetails}
+                        >
+                          {detail.courseDetails}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <motion.div
+            initial={{ x: 20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="space-y-6"
+          >
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-blue-600 dark:text-purple-300">
+                Preferences
+              </h2>
 
-        <div className="mb-4 mt-4 flex flex-col items-center">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-4xl">
-            <div className="flex items-center gap-4 col-span-2 sm:col-span-1 lg:col-span-1">
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="minDays"
-                  className="text-gray-700 dark:text-stone-100 font-bold"
-                >
-                  Minimum Days:
-                </label>
-                <select
-                  id="minDays"
-                  value={minDays}
-                  onChange={(e) => {
-                    setMinDays(parseInt(e.target.value, 10));
-                    setIsEditing(true);
-                  }}
-                  className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                >
-                  {[2, 3, 4, 5, 6].map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
+              <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-8">
+                <div className="flex-1 space-y-2">
+                  <Label htmlFor="min-days" className="text-gray-300">
+                    Minimum Days: {minDays}
+                  </Label>
+                  <Slider
+                    id="min-days"
+                    min={2}
+                    max={6}
+                    step={1}
+                    value={[minDays]}
+                    onValueChange={([value]) => {
+                      setMinDays(value);
+                      setIsEditing(true);
+                    }}
+                    className="bg-gray-600 dark:bg-slate-400"
+                  />
+                </div>
+
+                <div className="flex-1 space-y-2">
+                  <Label htmlFor="max-days" className="text-gray-300">
+                    Maximum Days: {maxDays}
+                  </Label>
+                  <Slider
+                    id="max-days"
+                    min={2}
+                    max={6}
+                    step={1}
+                    value={[maxDays]}
+                    onValueChange={([value]) => {
+                      setMaxDays(value);
+                      setIsEditing(true);
+                    }}
+                    className="bg-gray-600 dark:bg-slate-400"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-4 col-span-2 sm:col-span-1 lg:col-span-1">
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="maxDays"
-                  className="text-gray-700 dark:text-stone-100 font-bold"
-                >
-                  Maximum Days:
-                </label>
-                <select
-                  id="maxDays"
-                  value={maxDays}
-                  onChange={(e) => {
-                    setMaxDays(parseInt(e.target.value, 10));
-                    setIsEditing(true);
-                  }}
-                  className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                >
-                  {[2, 3, 4, 5, 6].map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="col-span-2 lg:col-span-2 flex items-center gap-4">
+
               <AvoidTimeSelector
                 avoidTime={avoidTime}
                 setAvoidTime={setAvoidTime}
@@ -208,24 +246,11 @@ const FormComponent = ({
                 setIsEditing={setIsEditing}
               />
             </div>
-          </div>
-          <button
-            type="submit"
-            className="mt-10 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 flex items-center justify-center"
-          >
-            <span className="relative flex items-center">
-              {isEditing && (
-                <span className="absolute flex h-3 w-3 mr-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-400"></span>
-                </span>
-              )}
-              <span className="pl-4">Generate Routine</span>
-            </span>
-          </button>
+          </motion.div>
         </div>
+        <GenerateRoutineButton isEditing={isEditing} />
       </form>
-    </div>
+    </motion.div>
   );
 };
 
