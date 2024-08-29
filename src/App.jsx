@@ -17,11 +17,12 @@ function App() {
   const [avoidDay, setAvoidDay] = useState([]);
   const [routines, setRoutines] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [totalRoutines, setTotalRoutines] = useState(0);
+
+  const pageSize = 10;
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const scrollPosition = useScrollPosition();
@@ -43,8 +44,6 @@ function App() {
         },
         {
           params: {
-            page: page,
-            page_size: 10,
             min_days: minDays,
             max_days: maxDays,
           },
@@ -57,7 +56,6 @@ function App() {
         setError("No routines can be generated for the given criteria.");
       } else {
         setRoutines(response.data.routines);
-        setTotalPages(Math.ceil(response.data.total_count / 10));
         setTotalRoutines(response.data.total_count);
       }
     } catch (error) {
@@ -69,7 +67,6 @@ function App() {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    handleSubmit(newPage);
   };
 
   const handleFormSubmit = async (e) => {
@@ -89,15 +86,17 @@ function App() {
   const showGoToBottomButton =
     scrollPosition < document.body.scrollHeight - window.innerHeight - 200;
 
+  const paginatedRoutines = routines.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
   return (
     <div id="mainbody" className={ThemeMode() ? "dark" : ""}>
       <div className="flex flex-col min-h-screen bg-neutral-100 dark:bg-neutral-900">
         <main className="flex-grow lg:px-10 xl:px-16 2xl:px-20 font-quicksand font-smooth-antialiased">
           <Header />
           <MainContent
-            routines={routines}
+            routines={paginatedRoutines}
             currentPage={currentPage}
-            totalPages={totalPages}
+            totalPages={Math.ceil(totalRoutines / pageSize)}
             totalRoutines={totalRoutines}
             handlePageChange={handlePageChange}
             handleFormSubmit={handleFormSubmit}
@@ -117,6 +116,7 @@ function App() {
             error={error}
             isEditing={isEditing}
             setIsEditing={setIsEditing}
+            setCurrentPage={setCurrentPage}
           />
         </main>
         <Footer />

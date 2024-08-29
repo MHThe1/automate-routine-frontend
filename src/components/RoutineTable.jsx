@@ -1,5 +1,3 @@
-import { useRef, useEffect } from "react";
-import PaginationComponent from "./PaginationComponent";
 import html2canvas from "html2canvas";
 import RoutineSnap from "./RoutineSnap";
 
@@ -30,13 +28,6 @@ const RoutineTable = ({
     "05:00 PM-06:20 PM",
   ];
 
-  const topOfRoutinesRef = useRef(null);
-
-  useEffect(() => {
-    if (routines.length > 0 && topOfRoutinesRef.current) {
-      topOfRoutinesRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [routines]);
 
   // Helper function to parse class lab schedule
   const parseSchedule = (scheduleString) => {
@@ -114,16 +105,6 @@ const RoutineTable = ({
 
   return (
     <div className="mt-4">
-      <div ref={topOfRoutinesRef} className="mb-4 px-4 py-4 bg-white dark:bg-gray-900 text-slate-900 dark:text-stone-100 text-center rounded-lg shadow-md">
-        <p className="font-quicksand font-bold text-xl text-green-600 dark:text-green-400">
-          Cooked up {totalRoutines} routines for you!
-        </p>
-        <PaginationComponent
-          currentPage={currentPage}
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-        />
-      </div>
       {routines.map((routine, index) => (
         <div
           key={index}

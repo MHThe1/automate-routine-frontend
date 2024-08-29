@@ -1,5 +1,3 @@
-import React from 'react';
-
 const PaginationComponent = ({ currentPage, totalPages, handlePageChange }) => {
   return (
     <div className="mt-4 text-center">

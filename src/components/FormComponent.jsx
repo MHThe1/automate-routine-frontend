@@ -33,6 +33,7 @@ const FormComponent = ({
   handleFormSubmit,
   isEditing,
   setIsEditing,
+  setCurrentPage,
 }) => {
   const [dropdownOptions, setDropdownOptions] = useState(
     Array(NUM_INPUTS).fill([])
@@ -244,6 +245,7 @@ const FormComponent = ({
                 setAvoidDay={setAvoidDay}
                 isEditing={isEditing}
                 setIsEditing={setIsEditing}
+                setCurrentPage={setCurrentPage}
               />
             </div>
           </motion.div>

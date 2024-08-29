@@ -25,12 +25,14 @@ const AvoidTimeSelector = ({
   avoidDay,
   setAvoidDay,
   setIsEditing,
+  setCurrentPage,
 }) => {
   const handleButtonClickTime = (value) => {
     setAvoidTime((prev) => 
       prev.includes(value) ? prev.filter((time) => time !== value) : [...prev, value]
     );
     setIsEditing(true);
+    setCurrentPage(1);
   };
 
   const handleButtonClickDay = (value) => {
@@ -38,6 +40,7 @@ const AvoidTimeSelector = ({
       prev.includes(value) ? prev.filter((day) => day !== value) : [...prev, value]
     );
     setIsEditing(true);
+    setCurrentPage(1);
   };
 
   return (
