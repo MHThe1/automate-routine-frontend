@@ -1,4 +1,4 @@
-import React from 'react';
+import { useRef, useEffect } from 'react';
 import RoutineTable from './RoutineTable';
 import FormComponent from './FormComponent';
 import PaginationComponent from './PaginationComponent';
@@ -27,6 +27,17 @@ const MainContent = ({
   isEditing,
   setIsEditing,
 }) => {
+  const loadingRef = useRef(null);
+  const errorRef = useRef(null);
+
+  useEffect(() => {
+    if (loading && loadingRef.current) {
+      loadingRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (error && errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [loading, error]);
+
   return (
     <div className="container mx-auto p-4">
       <FormComponent
@@ -47,19 +58,22 @@ const MainContent = ({
         setIsEditing={setIsEditing}
       />
       {loading && (
-        <div className="mt-4 text-center animate-pulse text-gray-700 dark:text-gray-300">
-          <p className="text-xl text-green-600 font-semibold">Cooking up some routines for you...<br/> Please wait...</p>
+        <div ref={loadingRef} className="mt-4 text-center animate-pulse text-gray-700 dark:text-gray-300">
+          <p className="text-xl text-green-600 font-semibold">
+            Cooking up some routines for you...<br/> Please wait...
+          </p>
         </div>
       )}
       {error && (
-        <div className="mt-4 text-center text-red-600 dark:text-red-400">
+        <div ref={errorRef} className="mt-4 text-center text-red-600 dark:text-red-400">
           <p className="text-xl font-semibold">{error}</p>
         </div>
       )}
       {routines.length > 0 && !loading && !error && (
         <div className='mt-4'>
-          <RoutineTable routines={routines} 
-            totalRoutines={totalRoutines} 
+          <RoutineTable
+            routines={routines}
+            totalRoutines={totalRoutines}
             currentPage={currentPage}
             totalPages={totalPages}
             handlePageChange={handlePageChange}

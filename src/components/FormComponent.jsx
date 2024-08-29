@@ -124,7 +124,7 @@ const FormComponent = ({
       <form onSubmit={handleFormSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-blue-600 dark:text-purple-300">
+            <h2 className="text-xl font-semibold text-blue-600 dark:text-purple-300">
               Course Selection
             </h2>
             {Array.from({ length: NUM_INPUTS }).map((_, index) => (
@@ -138,7 +138,7 @@ const FormComponent = ({
                 <div className="space-y-2">
                   <Label
                     htmlFor={`courseCode${index}`}
-                    className="text-black dark:text-gray-300"
+                    className="text-black dark:text-gray-300 text-base"
                   >
                     Course {index + 1}
                   </Label>
@@ -147,7 +147,7 @@ const FormComponent = ({
                     id={`courseCode${index}`}
                     value={courseCodes[index] || ""}
                     onChange={(e) => handleCodeChange(index, e.target.value)}
-                    className="bg-slate-100 dark:bg-gray-800 border-gray-700"
+                    className="bg-slate-100 dark:bg-gray-800 border-gray-700 text-base"
                     list={`courseCodeSuggestions${index}`}
                   />
                   <datalist id={`courseCodeSuggestions${index}`}>
@@ -159,7 +159,7 @@ const FormComponent = ({
                 <div className="space-y-2">
                   <Label
                     htmlFor={`courseDetails${index}`}
-                    className="text-gray-300"
+                    className="text-gray-300 text-base"
                   >
                     Section
                   </Label>
@@ -169,7 +169,7 @@ const FormComponent = ({
                   >
                     <SelectTrigger
                       id={`courseDetails${index}`}
-                      className="bg-slate-100 dark:bg-gray-800 border-gray-700"
+                      className="bg-slate-100 dark:bg-gray-800 border-gray-700 text-base"
                     >
                       <SelectValue placeholder="Select Section" />
                     </SelectTrigger>
@@ -195,13 +195,13 @@ const FormComponent = ({
             className="space-y-6"
           >
             <div className="space-y-6">
-              <h2 className="text-2xl font-semibold text-blue-600 dark:text-purple-300">
+              <h2 className="text-xl font-semibold text-blue-600 dark:text-purple-300">
                 Preferences
               </h2>
 
               <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-8">
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="min-days" className="text-gray-300">
+                  <Label htmlFor="min-days" className="text-gray-950 dark:text-gray-300 text-base">
                     Minimum Days: {minDays}
                   </Label>
                   <Slider
@@ -219,7 +219,7 @@ const FormComponent = ({
                 </div>
 
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="max-days" className="text-gray-300">
+                  <Label htmlFor="max-days" className="text-gray-950 dark:text-gray-300 text-base">
                     Maximum Days: {maxDays}
                   </Label>
                   <Slider

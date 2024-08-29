@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef, useEffect } from "react";
 import PaginationComponent from "./PaginationComponent";
 import html2canvas from "html2canvas";
 import RoutineSnap from "./RoutineSnap";
@@ -29,6 +29,14 @@ const RoutineTable = ({
     "03:30 PM-04:50 PM",
     "05:00 PM-06:20 PM",
   ];
+
+  const topOfRoutinesRef = useRef(null);
+
+  useEffect(() => {
+    if (routines.length > 0 && topOfRoutinesRef.current) {
+      topOfRoutinesRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [routines]);
 
   // Helper function to parse class lab schedule
   const parseSchedule = (scheduleString) => {
@@ -106,7 +114,7 @@ const RoutineTable = ({
 
   return (
     <div className="mt-4">
-      <div className="mb-4 px-4 py-4 bg-white dark:bg-gray-900 text-slate-900 dark:text-stone-100 text-center rounded-lg shadow-md">
+      <div ref={topOfRoutinesRef} className="mb-4 px-4 py-4 bg-white dark:bg-gray-900 text-slate-900 dark:text-stone-100 text-center rounded-lg shadow-md">
         <p className="font-quicksand font-bold text-xl text-green-600 dark:text-green-400">
           Cooked up {totalRoutines} routines for you!
         </p>
@@ -119,7 +127,7 @@ const RoutineTable = ({
       {routines.map((routine, index) => (
         <div
           key={index}
-          className="overflow-x-auto mb-6 border-dashed border-2 border-gray-400 dark:border-gray-200 rounded-lg"
+          className="overflow-x-auto mb-6 border border-dotted border-gray-400 dark:border-gray-200 rounded-lg shadow-lg"
         >
           <p className="text-md text-center text-slate-900 dark:text-stone-100 font-medium my-4">
             <span className="text-red-400 font-bold">

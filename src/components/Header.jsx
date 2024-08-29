@@ -6,7 +6,10 @@ export default function Header() {
       {/* App Title (Left) */}
       <div className="md:flex-1 text-center md:text-left mb-2 md:mb-0">
         <h1 className="text-xl font-semibold dark:text-white">
-          <button onClick={() => window.location.reload()} className="focus:outline-none">
+          <button
+            onClick={() => window.location.reload()}
+            className="focus:outline-none"
+          >
             Automate Routine
           </button>
         </h1>
@@ -14,8 +17,13 @@ export default function Header() {
 
       {/* Page Title (Center) */}
       <div className="flex-1 text-center mb-2 md:mb-0">
-        <span className="text-2xl font-bold dark:text-white text-black">
-          usismate
+        <span className="text-xl font-bold dark:text-white text-black">
+          <button
+            onClick={() => window.location.reload()}
+            className="focus:outline-none"
+          >
+            preregmate
+          </button>
         </span>
       </div>
 

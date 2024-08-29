@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import MainContent from './components/MainContent';
-import { ThemeMode } from './components/ToggleTheme';
-
-import { Analytics } from "@vercel/analytics/react"
-import './index.css';
+import React, { useState } from "react";
+import axios from "axios";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import MainContent from "./components/MainContent";
+import { ThemeMode } from "./components/ToggleTheme";
+import { Analytics } from "@vercel/analytics/react";
+import useScrollPosition from "./hooks/useScrollPosition";
+import "./index.css";
 
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
@@ -24,6 +24,7 @@ function App() {
   const [totalRoutines, setTotalRoutines] = useState(0);
 
   const apiUrl = import.meta.env.VITE_API_URL;
+  const scrollPosition = useScrollPosition();
 
   const handleSubmit = async (page = 1) => {
     setLoading(true);
@@ -35,7 +36,7 @@ function App() {
         {
           courses: courseCodes.map((code, index) => ({
             courseCode: code,
-            section: courseDetails[index] || '',
+            section: courseDetails[index] || "",
           })),
           avoid_time: avoidTime,
           avoid_day: avoidDay,
@@ -48,19 +49,19 @@ function App() {
             max_days: maxDays,
           },
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
       if (response.data.routines.length === 0) {
-        setError('No routines can be generated for the given criteria.');
+        setError("No routines can be generated for the given criteria.");
       } else {
         setRoutines(response.data.routines);
         setTotalPages(Math.ceil(response.data.total_count / 10));
         setTotalRoutines(response.data.total_count);
       }
     } catch (error) {
-      setError('There was an error fetching the data.');
+      setError("There was an error fetching the data.");
     } finally {
       setLoading(false);
     }
@@ -76,8 +77,20 @@ function App() {
     handleSubmit();
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToBottom = () => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  };
+
+  const showGoToTopButton = scrollPosition > 200;
+  const showGoToBottomButton =
+    scrollPosition < document.body.scrollHeight - window.innerHeight - 200;
+
   return (
-    <div id="mainbody" className={ThemeMode() ? 'dark' : ''}>
+    <div id="mainbody" className={ThemeMode() ? "dark" : ""}>
       <div className="flex flex-col min-h-screen bg-neutral-100 dark:bg-neutral-900">
         <main className="flex-grow lg:px-10 xl:px-16 2xl:px-20 font-quicksand font-smooth-antialiased">
           <Header />
@@ -108,6 +121,22 @@ function App() {
         </main>
         <Footer />
         <Analytics />
+        {showGoToTopButton && (
+          <button
+            className="fixed bottom-16 right-14 w-8 h-8 bg-blue-500 text-white rounded-full shadow-lg transition hover:bg-blue-600 animate-bounce-once"
+            onClick={scrollToTop}
+          >
+            ↑
+          </button>
+        )}
+        {showGoToBottomButton && (
+          <button
+            className="fixed bottom-16 right-4 w-8 h-8 bg-green-500 text-white rounded-full shadow-lg transition hover:bg-green-600 animate-bounce-once"
+            onClick={scrollToBottom}
+          >
+            ↓
+          </button>
+        )}
       </div>
     </div>
   );

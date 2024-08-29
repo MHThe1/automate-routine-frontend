@@ -68,3 +68,16 @@
     transform: translateX(-100%);
   }
 }
+
+@keyframes bounceOnce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-once:hover {
+  animation: bounceOnce 0.5s;
+}
