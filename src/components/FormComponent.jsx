@@ -76,12 +76,17 @@ const FormComponent = ({
   const handleCodeChange = async (index, value) => {
     const capitalizedValue = value.toUpperCase().trim();
 
+    // Create a new array with updated value at the specified index
     const updatedCodes = [...courseCodes];
     updatedCodes[index] = capitalizedValue;
-    setCourseCodes(updatedCodes);
+
+    // Filter out empty strings from the updated array
+    const filteredCodes = updatedCodes.filter(code => code !== "");
+
+    setCourseCodes(filteredCodes);
     setIsEditing(true);
 
-    if (value.trim() !== "") {
+    if (capitalizedValue !== "") {
       try {
         const response = await axios.get(
           `${apiUrl}/course-code-suggestions/?q=${value}`
@@ -100,13 +105,15 @@ const FormComponent = ({
         });
       }
     } else {
+      // Clear suggestions when the value is empty
       setSuggestions((prev) => {
         const newSuggestions = [...prev];
         newSuggestions[index] = [];
         return newSuggestions;
       });
     }
-  };
+};
+
 
   const handleDetailChange = (index, value) => {
     const updatedDetails = [...courseDetails];
