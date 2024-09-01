@@ -39,6 +39,7 @@ const FormComponent = ({
     Array(NUM_INPUTS).fill([])
   );
   const [suggestions, setSuggestions] = useState(Array(NUM_INPUTS).fill([]));
+  const [formError, setFormError] = useState(null);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -76,12 +77,10 @@ const FormComponent = ({
   const handleCodeChange = async (index, value) => {
     const capitalizedValue = value.toUpperCase().trim();
 
-    // Create a new array with updated value at the specified index
     const updatedCodes = [...courseCodes];
     updatedCodes[index] = capitalizedValue;
 
-    // Filter out empty strings from the updated array
-    const filteredCodes = updatedCodes.filter(code => code !== "");
+    const filteredCodes = updatedCodes.filter((code) => code !== "");
 
     setCourseCodes(filteredCodes);
     setIsEditing(true);
@@ -105,21 +104,38 @@ const FormComponent = ({
         });
       }
     } else {
-      // Clear suggestions when the value is empty
       setSuggestions((prev) => {
         const newSuggestions = [...prev];
         newSuggestions[index] = [];
         return newSuggestions;
       });
     }
-};
-
+  };
 
   const handleDetailChange = (index, value) => {
     const updatedDetails = [...courseDetails];
     updatedDetails[index] = value;
     setCourseDetails(updatedDetails);
     setIsEditing(true);
+  };
+
+  const validateForm = () => {
+    if (
+      courseCodes.length === NUM_INPUTS &&
+      courseDetails.every((detail) => detail.trim() === "")
+    ) {
+      setFormError("4c0s");
+      return false;
+    }
+    setFormError(null);
+    return true;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      handleFormSubmit(e);
+    }
   };
 
   return (
@@ -129,7 +145,7 @@ const FormComponent = ({
       transition={{ duration: 0.5 }}
       className="container mx-auto p-8 space-y-10 dark:bg-gray-900 bg-slate-300 dark:text-gray-100 text-black rounded-lg shadow-2xl"
     >
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-blue-600 dark:text-purple-300">
@@ -209,7 +225,10 @@ const FormComponent = ({
 
               <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-8">
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="min-days" className="text-gray-950 dark:text-gray-300 text-base">
+                  <Label
+                    htmlFor="min-days"
+                    className="text-gray-950 dark:text-gray-300 text-base"
+                  >
                     Minimum Days: {minDays}
                   </Label>
                   <Slider
@@ -227,7 +246,10 @@ const FormComponent = ({
                 </div>
 
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="max-days" className="text-gray-950 dark:text-gray-300 text-base">
+                  <Label
+                    htmlFor="max-days"
+                    className="text-gray-950 dark:text-gray-300 text-base"
+                  >
                     Maximum Days: {maxDays}
                   </Label>
                   <Slider
@@ -257,6 +279,22 @@ const FormComponent = ({
             </div>
           </motion.div>
         </div>
+        {formError && (
+          <div className="text-red-500 text-sm mt-4 text-center">
+            {formError === "4c0s" && (
+              <>
+                {
+                  "If you want to generate a routine with 4 courses, please add at least one course section."
+                }
+                <br />
+                {
+                  "As combinations grow larger, the time taken to generate the routines increases and without a section added, your request will fail!"
+                }
+              </>
+            )}
+          </div>
+        )}
+
         <GenerateRoutineButton isEditing={isEditing} />
       </form>
     </motion.div>
