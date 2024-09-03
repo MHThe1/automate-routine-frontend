@@ -35,6 +35,7 @@ const FormComponent = ({
   setIsEditing,
   setCurrentPage,
 }) => {
+  const [preloadedCourseCodes, setPreloadedCourseCodes] = useState([]);
   const [dropdownOptions, setDropdownOptions] = useState(
     Array(NUM_INPUTS).fill([])
   );
@@ -44,35 +45,18 @@ const FormComponent = ({
   const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    const fetchCourseDetails = async (index, code) => {
-      if (code.trim() === "") {
-        setDropdownOptions((prev) => {
-          const newOptions = [...prev];
-          newOptions[index] = [];
-          return newOptions;
-        });
-        return;
-      }
-
+    // Preload all course codes
+    const preloadCourseCodes = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/sections/${code.trim()}/`);
-        setDropdownOptions((prev) => {
-          const newOptions = [...prev];
-          newOptions[index] = response.data;
-          return newOptions;
-        });
+        const response = await axios.get(`${apiUrl}/all-course-codes/`);
+        setPreloadedCourseCodes(response.data);
       } catch (error) {
-        console.error("Error fetching course details:", error);
-        setDropdownOptions((prev) => {
-          const newOptions = [...prev];
-          newOptions[index] = [];
-          return newOptions;
-        });
+        console.error("Error preloading course codes:", error);
       }
     };
 
-    courseCodes.forEach((code, index) => fetchCourseDetails(index, code));
-  }, [courseCodes, apiUrl]);
+    preloadCourseCodes();
+  }, [apiUrl]);
 
   const handleCodeChange = async (index, value) => {
     const capitalizedValue = value.toUpperCase().trim();
@@ -86,21 +70,33 @@ const FormComponent = ({
     setIsEditing(true);
 
     if (capitalizedValue !== "") {
+      // Filter the preloaded course codes for suggestions
+      const filteredSuggestions = preloadedCourseCodes.filter((code) =>
+        code.startsWith(capitalizedValue)
+      );
+
+      setSuggestions((prev) => {
+        const newSuggestions = [...prev];
+        newSuggestions[index] = filteredSuggestions;
+        return newSuggestions;
+      });
+
+      // Fetch course details for the selected code
       try {
         const response = await axios.get(
-          `${apiUrl}/course-code-suggestions/?q=${value}`
+          `${apiUrl}/sections/${capitalizedValue}/`
         );
-        setSuggestions((prev) => {
-          const newSuggestions = [...prev];
-          newSuggestions[index] = response.data;
-          return newSuggestions;
+        setDropdownOptions((prev) => {
+          const newOptions = [...prev];
+          newOptions[index] = response.data;
+          return newOptions;
         });
       } catch (error) {
-        console.error("Error fetching course code suggestions:", error);
-        setSuggestions((prev) => {
-          const newSuggestions = [...prev];
-          newSuggestions[index] = [];
-          return newSuggestions;
+        console.error("Error fetching course details:", error);
+        setDropdownOptions((prev) => {
+          const newOptions = [...prev];
+          newOptions[index] = [];
+          return newOptions;
         });
       }
     } else {
