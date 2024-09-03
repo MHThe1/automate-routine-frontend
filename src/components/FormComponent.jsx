@@ -3,14 +3,8 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import AutoComplete from "./AutoComplete";
 
 import AvoidTimeSelector from "./AvoidTimeSelector";
 import GenerateRoutineButton from "./GenerateRoutineButton";
@@ -36,16 +30,13 @@ const FormComponent = ({
   setCurrentPage,
 }) => {
   const [preloadedCourseCodes, setPreloadedCourseCodes] = useState([]);
-  const [dropdownOptions, setDropdownOptions] = useState(
-    Array(NUM_INPUTS).fill([])
-  );
+  const [dropdownOptions, setDropdownOptions] = useState(Array(NUM_INPUTS).fill([]));
   const [suggestions, setSuggestions] = useState(Array(NUM_INPUTS).fill([]));
   const [formError, setFormError] = useState(null);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    // Preload all course codes
     const preloadCourseCodes = async () => {
       try {
         const response = await axios.get(`${apiUrl}/all-course-codes/`);
@@ -70,7 +61,6 @@ const FormComponent = ({
     setIsEditing(true);
 
     if (capitalizedValue !== "") {
-      // Filter the preloaded course codes for suggestions
       const filteredSuggestions = preloadedCourseCodes.filter((code) =>
         code.startsWith(capitalizedValue)
       );
@@ -81,11 +71,8 @@ const FormComponent = ({
         return newSuggestions;
       });
 
-      // Fetch course details for the selected code
       try {
-        const response = await axios.get(
-          `${apiUrl}/sections/${capitalizedValue}/`
-        );
+        const response = await axios.get(`${apiUrl}/sections/${capitalizedValue}/`);
         setDropdownOptions((prev) => {
           const newOptions = [...prev];
           newOptions[index] = response.data;
@@ -162,19 +149,12 @@ const FormComponent = ({
                   >
                     Course {index + 1}
                   </Label>
-                  <Input
-                    type="text"
-                    id={`courseCode${index}`}
+                  <AutoComplete
                     value={courseCodes[index] || ""}
-                    onChange={(e) => handleCodeChange(index, e.target.value)}
-                    className="bg-slate-100 dark:bg-gray-800 border-gray-700 text-base"
-                    list={`courseCodeSuggestions${index}`}
+                    suggestions={suggestions[index]}
+                    onChange={(value) => handleCodeChange(index, value)}
+                    onSelect={(value) => handleCodeChange(index, value)}
                   />
-                  <datalist id={`courseCodeSuggestions${index}`}>
-                    {suggestions[index].map((suggestion, idx) => (
-                      <option key={idx} value={suggestion} />
-                    ))}
-                  </datalist>
                 </div>
                 <div className="space-y-2">
                   <Label
@@ -279,13 +259,9 @@ const FormComponent = ({
           <div className="text-red-500 text-sm mt-4 text-center">
             {formError === "4c0s" && (
               <>
-                {
-                  "If you want to generate a routine with 4 courses, please add at least one course section."
-                }
+                {"If you want to generate a routine with 4 courses, please add at least one course section."}
                 <br />
-                {
-                  "As combinations grow larger, the time taken to generate the routines increases and without a section added, your request will fail!"
-                }
+                {"As combinations grow larger, the time taken to generate the routines increases and without a section added, your request will fail!"}
               </>
             )}
           </div>
