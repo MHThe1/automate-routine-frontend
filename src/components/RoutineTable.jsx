@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import RoutineSnap from "./RoutineSnap";
 
@@ -8,6 +9,9 @@ const RoutineTable = ({
   totalRoutines,
   handlePageChange,
 }) => {
+  const [tooltipContent, setTooltipContent] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
   const days = [
     "Sunday",
     "Monday",
@@ -28,7 +32,6 @@ const RoutineTable = ({
     "05:00 PM-06:20 PM",
   ];
 
-
   // Helper function to parse class lab schedule
   const parseSchedule = (scheduleString) => {
     const schedules = [];
@@ -47,6 +50,63 @@ const RoutineTable = ({
     return `${courseDetails}<br />[${initial}] ${roomNo}`;
   };
 
+  const handleCellInteraction = (event, section) => {
+    const rect = event.target.getBoundingClientRect();
+    setTooltipPosition({
+      x: rect.left + window.scrollX,
+      y: rect.bottom + window.scrollY,
+    });
+    setTooltipContent(
+      <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg max-w-sm">
+        <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">
+          {section.courseCode} - {section.courseTitle}
+        </h3>
+        <div className="space-y-2">
+          <p className="text-sm">
+            <span className="font-bold text-gray-700 dark:text-gray-300">
+              Instructor:
+            </span>{" "}
+            <span className="font-semibold text-gray-700 dark:text-gray-300">
+              {section.empName} [{section.empShortName}]
+            </span>
+          </p>
+          <p className="text-sm">
+            <span className="font-bold text-gray-700 dark:text-gray-300">
+              Department:
+            </span>{" "}
+            <span className="font-semibold text-gray-700 dark:text-gray-300">
+              {section.deptName}
+            </span>
+          </p>
+          <p className="text-sm">
+            <span className="font-bold text-gray-700 dark:text-gray-300">
+              Pre-requisites:
+            </span>{" "}
+            <span className="font-semibold text-gray-700 dark:text-gray-300">
+              {section.preRequisiteCourses || "None"}
+            </span>
+          </p>
+          <p className="text-sm">
+            <span className="font-bold text-gray-700 dark:text-gray-300">
+              Credit:
+            </span>{" "}
+            <span className="font-semibold text-gray-700 dark:text-gray-300">
+              {section.courseCredit}
+            </span>
+          </p>
+          <p className="text-sm">
+            <span className="font-bold text-gray-700 dark:text-gray-300">
+              Exam Day:
+            </span>{" "}
+            <span className="font-semibold text-gray-700 dark:text-gray-300">
+              {section.dayNo}
+            </span>
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   const getCourseDetails = (day, time, routine) => {
     if (Array.isArray(routine.courses)) {
       for (let section of routine.courses) {
@@ -61,7 +121,15 @@ const RoutineTable = ({
               section.empShortName,
               schedule.room
             );
-            return <div dangerouslySetInnerHTML={{ __html: formattedText }} />;
+            return (
+              <div
+                dangerouslySetInnerHTML={{ __html: formattedText }}
+                onMouseEnter={(e) => handleCellInteraction(e, section)}
+                onMouseLeave={() => setTooltipContent(null)}
+                onClick={(e) => handleCellInteraction(e, section)}
+                style={{ cursor: "pointer" }}
+              />
+            );
           }
         }
       }
@@ -101,7 +169,6 @@ const RoutineTable = ({
         console.error("Couldn't Download!");
       });
   };
-  
 
   return (
     <div className="mt-4">
@@ -135,7 +202,7 @@ const RoutineTable = ({
             </thead>
             <tbody className="bg-white dark:bg-slate-900 text-black dark:text-stone-100 divide-y divide-gray-200">
               {timeSlots
-                .filter((time) => rowHasClassData(routine, time)) // Only render rows with class data
+                .filter((time) => rowHasClassData(routine, time))
                 .map((time, rowIndex) => (
                   <tr key={rowIndex}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-stone-100 font-bold">
@@ -144,7 +211,7 @@ const RoutineTable = ({
                     {days.map((day, colIndex) => (
                       <td
                         key={colIndex}
-                        className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500 dark:text-stone-100 font-bold"
+                        className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500 dark:text-stone-100 font-bold hover:scale-75 transition-transform duration-300"
                       >
                         {getCourseDetails(day, time, routine)}
                       </td>
@@ -154,16 +221,29 @@ const RoutineTable = ({
             </tbody>
           </table>
           <div className="m-4 flex justify-center space-x-4">
-          <button
-            onClick={handleTakeScreenshot}
-            className="bg-green-500 hover:bg-green-800 text-black hover:text-white font-bold py-2 px-4 rounded shadow-md transition-colors duration-300"
-          >
-            Download Routine
-          </button>
+            <button
+              onClick={handleTakeScreenshot}
+              className="bg-green-500 hover:bg-green-800 text-black hover:text-white font-bold py-2 px-4 rounded shadow-md transition-colors duration-300"
+            >
+              Download Routine
+            </button>
           </div>
           <RoutineSnap routine={routine} />
         </div>
       ))}
+      {tooltipContent && (
+        <div
+          style={{
+            position: "absolute",
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`,
+            zIndex: 1000,
+          }}
+          className="animate-fade-in transition-opacity duration-300"
+        >
+          {tooltipContent}
+        </div>
+      )}
     </div>
   );
 };
