@@ -1,7 +1,7 @@
 export default function Footer() {
     return (
         <footer className="sticky bottom-0 flex flex-col items-center justify-center p-2 bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 font-mono">
-            <p className="mb-1">Developed by: @mhthe1</p>
+            <p className="mb-1">Developed with 🤍 by: @mhthe1</p>
             <ul className="flex space-x-4">
                 <SocailLink link="https://mehedihtanvir.me" icon="/icons/myDp.png" platform="Dev Portfolio" />
                 <SocailLink link="https://github.com/MHThe1" icon="/icons/github-icon.png" platform="GitHub" />

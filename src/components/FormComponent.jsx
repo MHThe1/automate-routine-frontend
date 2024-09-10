@@ -3,7 +3,13 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import AutoComplete from "./AutoComplete";
 
 import AvoidTimeSelector from "./AvoidTimeSelector";
@@ -27,10 +33,11 @@ const FormComponent = ({
   handleFormSubmit,
   isEditing,
   setIsEditing,
-  setCurrentPage,
 }) => {
   const [preloadedCourseCodes, setPreloadedCourseCodes] = useState([]);
-  const [dropdownOptions, setDropdownOptions] = useState(Array(NUM_INPUTS).fill([]));
+  const [dropdownOptions, setDropdownOptions] = useState(
+    Array(NUM_INPUTS).fill([])
+  );
   const [suggestions, setSuggestions] = useState(Array(NUM_INPUTS).fill([]));
   const [formError, setFormError] = useState(null);
 
@@ -72,7 +79,9 @@ const FormComponent = ({
       });
 
       try {
-        const response = await axios.get(`${apiUrl}/sections/${capitalizedValue}/`);
+        const response = await axios.get(
+          `${apiUrl}/sections/${capitalizedValue}/`
+        );
         setDropdownOptions((prev) => {
           const newOptions = [...prev];
           newOptions[index] = response.data;
@@ -242,15 +251,15 @@ const FormComponent = ({
                   />
                 </div>
               </div>
-
+              <h2 className="text-xl font-semibold text-blue-600 dark:text-purple-300">
+                Filters
+              </h2>
               <AvoidTimeSelector
                 avoidTime={avoidTime}
                 setAvoidTime={setAvoidTime}
                 avoidDay={avoidDay}
                 setAvoidDay={setAvoidDay}
-                isEditing={isEditing}
                 setIsEditing={setIsEditing}
-                setCurrentPage={setCurrentPage}
               />
             </div>
           </motion.div>
@@ -259,9 +268,13 @@ const FormComponent = ({
           <div className="text-red-500 text-sm mt-4 text-center">
             {formError === "4c0s" && (
               <>
-                {"If you want to generate a routine with 4 courses, please add at least one course section."}
+                {
+                  "If you want to generate a routine with 4 courses, please add at least one course section."
+                }
                 <br />
-                {"As combinations grow larger, the time taken to generate the routines increases and without a section added, your request will fail!"}
+                {
+                  "As combinations grow larger, the time taken to generate the routines increases and without a section added, your request will fail!"
+                }
               </>
             )}
           </div>

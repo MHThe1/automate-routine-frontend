@@ -25,14 +25,12 @@ const AvoidTimeSelector = ({
   avoidDay,
   setAvoidDay,
   setIsEditing,
-  setCurrentPage,
 }) => {
   const handleButtonClickTime = (value) => {
     setAvoidTime((prev) => 
       prev.includes(value) ? prev.filter((time) => time !== value) : [...prev, value]
     );
     setIsEditing(true);
-    setCurrentPage(1);
   };
 
   const handleButtonClickDay = (value) => {
@@ -40,7 +38,6 @@ const AvoidTimeSelector = ({
       prev.includes(value) ? prev.filter((day) => day !== value) : [...prev, value]
     );
     setIsEditing(true);
-    setCurrentPage(1);
   };
 
   return (
@@ -57,6 +54,7 @@ const AvoidTimeSelector = ({
           {timeOptions.map((option) => (
             <button
               key={option.value}
+              type="button"
               onClick={() => handleButtonClickTime(option.value)}
               className={`px-2 py-1 text-sm rounded ${
                 avoidTime.includes(option.value)
@@ -77,6 +75,7 @@ const AvoidTimeSelector = ({
           {dayOptions.map((option) => (
             <button
               key={option.value}
+              type="button"
               onClick={() => handleButtonClickDay(option.value)}
               className={`px-4 py-1 text-sm rounded ${
                 avoidDay.includes(option.value)
