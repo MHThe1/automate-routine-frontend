@@ -67,6 +67,11 @@ const FormComponent = ({
     setCourseCodes(filteredCodes);
     setIsEditing(true);
 
+    // Reset the section when changing the course code
+    const updatedDetails = [...courseDetails];
+    updatedDetails[index] = "";
+    setCourseDetails(updatedDetails);
+
     if (capitalizedValue !== "") {
       const filteredSuggestions = preloadedCourseCodes.filter((code) =>
         code.startsWith(capitalizedValue)
@@ -110,6 +115,15 @@ const FormComponent = ({
     setCourseDetails(updatedDetails);
     setIsEditing(true);
   };
+
+
+  const handleClearSection = (index) => {
+    const updatedDetails = [...courseDetails];
+    updatedDetails[index] = "";
+    setCourseDetails(updatedDetails);
+    setIsEditing(true);
+  };
+
 
   const validateForm = () => {
     if (
@@ -172,27 +186,37 @@ const FormComponent = ({
                   >
                     Section
                   </Label>
-                  <Select
-                    value={courseDetails[index] || ""}
-                    onValueChange={(value) => handleDetailChange(index, value)}
-                  >
-                    <SelectTrigger
-                      id={`courseDetails${index}`}
-                      className="bg-slate-100 dark:bg-gray-800 border-gray-700 text-base"
+                  <div className="flex items-center space-x-2">
+                    <Select
+                      value={courseDetails[index] || ""}
+                      onValueChange={(value) => handleDetailChange(index, value)}
                     >
-                      <SelectValue placeholder="Select Section" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-100 dark:bg-slate-600 border-gray-700">
-                      {dropdownOptions[index].map((detail) => (
-                        <SelectItem
-                          key={detail.id}
-                          value={detail.courseDetails}
-                        >
-                          {detail.courseDetails}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                      <SelectTrigger
+                        id={`courseDetails${index}`}
+                        className="bg-slate-100 dark:bg-gray-800 border-gray-700 text-base"
+                      >
+                        <SelectValue placeholder="Select Section" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-100 dark:bg-slate-600 border-gray-700">
+                        {dropdownOptions[index].map((detail) => (
+                          <SelectItem
+                            key={detail.id}
+                            value={detail.courseDetails}
+                          >
+                            {detail.courseDetails}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleClearSection(index)}
+                    >
+                      <span className="text-red-600">x</span>
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}

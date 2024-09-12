@@ -91,8 +91,9 @@ function App() {
   return (
     <div id="mainbody" className={ThemeMode() ? "dark" : ""}>
       <div className="flex flex-col min-h-screen bg-neutral-100 dark:bg-neutral-900 overflow-clip">
+      <Header />
+
         <main className="flex-grow lg:px-10 xl:px-16 2xl:px-20 font-quicksand font-smooth-antialiased">
-          <Header />
           <MainContent
             routines={paginatedRoutines}
             currentPage={currentPage}
