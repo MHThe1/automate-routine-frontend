@@ -15,7 +15,7 @@ import AutoComplete from "./AutoComplete";
 import AvoidTimeSelector from "./AvoidTimeSelector";
 import GenerateRoutineButton from "./GenerateRoutineButton";
 
-const NUM_INPUTS = 4;
+const NUM_INPUTS = 6;
 
 const FormComponent = ({
   courseCodes,
@@ -114,25 +114,34 @@ const FormComponent = ({
     updatedDetails[index] = value;
     setCourseDetails(updatedDetails);
     setIsEditing(true);
+    setFormError(null);
   };
-
 
   const handleClearSection = (index) => {
     const updatedDetails = [...courseDetails];
     updatedDetails[index] = "";
     setCourseDetails(updatedDetails);
     setIsEditing(true);
+    setFormError(null);
+
   };
 
-
   const validateForm = () => {
-    if (
-      courseCodes.length === NUM_INPUTS &&
-      courseDetails.every((detail) => detail.trim() === "")
-    ) {
-      setFormError("4c0s");
+    const filledSections = courseDetails.filter(
+      (detail) => detail.trim() !== ""
+    ).length;
+
+    if (courseCodes.length === 4 && filledSections < 1) {
+      setFormError("4c1s");
+      return false;
+    } else if (courseCodes.length === 5 && filledSections < 2) {
+      setFormError("5c2s");
+      return false;
+    } else if (courseCodes.length === 6 && filledSections < 3) {
+      setFormError("6c3s");
       return false;
     }
+
     setFormError(null);
     return true;
   };
@@ -189,7 +198,9 @@ const FormComponent = ({
                   <div className="flex items-center space-x-2">
                     <Select
                       value={courseDetails[index] || ""}
-                      onValueChange={(value) => handleDetailChange(index, value)}
+                      onValueChange={(value) =>
+                        handleDetailChange(index, value)
+                      }
                     >
                       <SelectTrigger
                         id={`courseDetails${index}`}
@@ -290,15 +301,31 @@ const FormComponent = ({
         </div>
         {formError && (
           <div className="text-red-500 text-sm mt-4 text-center">
-            {formError === "4c0s" && (
+            {formError === "4c1s" && (
               <>
                 {
-                  "If you want to generate a routine with 4 courses, please add at least one course section."
+                  "If you want to generate a routine with 4 courses, please add at least 1 section."
                 }
                 <br />
+                {"Your request will fail without at least 1 section added."}
+              </>
+            )}
+            {formError === "5c2s" && (
+              <>
                 {
-                  "As combinations grow larger, the time taken to generate the routines increases and without a section added, your request will fail!"
+                  "If you want to generate a routine with 5 courses, please add at least 2 sections."
                 }
+                <br />
+                {"Your request will fail without at least 2 sections added."}
+              </>
+            )}
+            {formError === "6c3s" && (
+              <>
+                {
+                  "If you want to generate a routine with 6 courses, please add at least 3 sections."
+                }
+                <br />
+                {"Your request will fail without at least 3 sections added."}
               </>
             )}
           </div>
