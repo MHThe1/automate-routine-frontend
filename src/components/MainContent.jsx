@@ -15,12 +15,14 @@ const MainContent = ({
   minDays,
   maxDays,
   avoidTime,
+  avoidFaculty,
   avoidDay,
   setCourseCodes,
   setCourseDetails,
   setMinDays,
   setMaxDays,
   setAvoidTime,
+  setAvoidFaculty,
   setAvoidDay,
   loading,
   error,
@@ -80,11 +82,13 @@ const MainContent = ({
         minDays={minDays}
         maxDays={maxDays}
         avoidTime={avoidTime}
+        avoidFaculty={avoidFaculty}
         avoidDay={avoidDay}
         setCourseCodes={setCourseCodes}
         setCourseDetails={setCourseDetails}
         setMinDays={setMinDays}
         setMaxDays={setMaxDays}
+        setAvoidFaculty={setAvoidFaculty}
         setAvoidTime={setAvoidTime}
         setAvoidDay={setAvoidDay}
         handleFormSubmit={handleFormSubmit}

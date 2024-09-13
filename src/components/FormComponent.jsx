@@ -3,6 +3,8 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -22,12 +24,14 @@ const FormComponent = ({
   courseDetails,
   minDays,
   maxDays,
+  avoidFaculty,
   avoidTime,
   avoidDay,
   setCourseCodes,
   setCourseDetails,
   setMinDays,
   setMaxDays,
+  setAvoidFaculty,
   setAvoidTime,
   setAvoidDay,
   handleFormSubmit,
@@ -40,6 +44,8 @@ const FormComponent = ({
   );
   const [suggestions, setSuggestions] = useState(Array(NUM_INPUTS).fill([]));
   const [formError, setFormError] = useState(null);
+
+  const [facultyInput, setFacultyInput] = useState("");
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -123,7 +129,6 @@ const FormComponent = ({
     setCourseDetails(updatedDetails);
     setIsEditing(true);
     setFormError(null);
-
   };
 
   const validateForm = () => {
@@ -151,6 +156,22 @@ const FormComponent = ({
     if (validateForm()) {
       handleFormSubmit(e);
     }
+  };
+
+  const handleAddFaculty = () => {
+    if (facultyInput.trim()) {
+      const capitalizedInput = facultyInput.toUpperCase().trim();
+      if (!avoidFaculty.includes(capitalizedInput)) {
+        setAvoidFaculty([...avoidFaculty, capitalizedInput]);
+        setFacultyInput("");
+        setIsEditing(true);
+      }
+    }
+  };
+
+  const handleRemoveFaculty = (faculty) => {
+    setAvoidFaculty(avoidFaculty.filter((f) => f !== faculty));
+    setIsEditing(true);
   };
 
   return (
@@ -289,6 +310,45 @@ const FormComponent = ({
               <h2 className="text-xl font-semibold text-blue-600 dark:text-purple-300">
                 Filters
               </h2>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="avoid-faculty"
+                  className="text-gray-950 dark:text-gray-300 text-base"
+                >
+                  Avoid Faculty
+                </Label>
+                <div className="flex space-x-2">
+                  <Input
+                    id="avoid-faculty"
+                    value={facultyInput}
+                    onChange={(e) => setFacultyInput(e.target.value)}
+                    placeholder="Enter faculty initials"
+                    className="bg-slate-100 dark:bg-gray-800 border-gray-700"
+                  />
+                  <Button onClick={handleAddFaculty} type="button" className="bg-purple-600 text-white">
+                    Add
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {avoidFaculty.map((faculty, index) => (
+                    <div
+                      key={index}
+                      className="bg-slate-200 dark:bg-gray-700 px-2 py-1 rounded-md flex items-center"
+                    >
+                      <span>{faculty}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFaculty(faculty)}
+                        className="ml-2 text-red-500 hover:text-red-700"
+                      >
+                        x
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <AvoidTimeSelector
                 avoidTime={avoidTime}
                 setAvoidTime={setAvoidTime}
