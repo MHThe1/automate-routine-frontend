@@ -10,7 +10,8 @@ import "./index.css";
 
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
-  const [courseDetails, setCourseDetails] = useState([]);
+  const [courseDetails, setCourseDetails] =  useState([[]]);
+  const [preferredFaculties, setPreferredFaculties] = useState([[]]);
   const [minDays, setMinDays] = useState(2);
   const [maxDays, setMaxDays] = useState(5);
   const [avoidFaculty, setAvoidFaculty] = useState([]);
@@ -38,7 +39,8 @@ function App() {
         {
           courses: courseCodes.map((code, index) => ({
             courseCode: code,
-            section: courseDetails[index] || "",
+            sections: courseDetails[index] || [],
+            faculties: preferredFaculties[index] || [],
           })),
           avoid_faculty: avoidFaculty,
           avoid_time: avoidTime,
@@ -105,6 +107,7 @@ function App() {
             handleFormSubmit={handleFormSubmit}
             courseCodes={courseCodes}
             courseDetails={courseDetails}
+            preferredFaculties={preferredFaculties}
             minDays={minDays}
             maxDays={maxDays}
             avoidFaculty={avoidFaculty}
@@ -112,6 +115,7 @@ function App() {
             avoidDay={avoidDay}
             setCourseCodes={setCourseCodes}
             setCourseDetails={setCourseDetails}
+            setPreferredFaculties={setPreferredFaculties}
             setMinDays={setMinDays}
             setMaxDays={setMaxDays}
             setAvoidTime={setAvoidTime}

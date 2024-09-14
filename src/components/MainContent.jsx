@@ -12,6 +12,7 @@ const MainContent = ({
   handleFormSubmit,
   courseCodes,
   courseDetails,
+  preferredFaculties,
   minDays,
   maxDays,
   avoidTime,
@@ -19,6 +20,7 @@ const MainContent = ({
   avoidDay,
   setCourseCodes,
   setCourseDetails,
+  setPreferredFaculties,
   setMinDays,
   setMaxDays,
   setAvoidTime,
@@ -79,6 +81,7 @@ const MainContent = ({
       <FormComponent
         courseCodes={courseCodes}
         courseDetails={courseDetails}
+        preferredFaculties={preferredFaculties}
         minDays={minDays}
         maxDays={maxDays}
         avoidTime={avoidTime}
@@ -86,6 +89,7 @@ const MainContent = ({
         avoidDay={avoidDay}
         setCourseCodes={setCourseCodes}
         setCourseDetails={setCourseDetails}
+        setPreferredFaculties={setPreferredFaculties}
         setMinDays={setMinDays}
         setMaxDays={setMaxDays}
         setAvoidFaculty={setAvoidFaculty}

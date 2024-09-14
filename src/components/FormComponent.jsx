@@ -22,6 +22,7 @@ const NUM_INPUTS = 6;
 const FormComponent = ({
   courseCodes,
   courseDetails,
+  preferredFaculties,
   minDays,
   maxDays,
   avoidFaculty,
@@ -29,6 +30,7 @@ const FormComponent = ({
   avoidDay,
   setCourseCodes,
   setCourseDetails,
+  setPreferredFaculties,
   setMinDays,
   setMaxDays,
   setAvoidFaculty,
@@ -39,6 +41,7 @@ const FormComponent = ({
   setIsEditing,
 }) => {
   const [preloadedCourseCodes, setPreloadedCourseCodes] = useState([]);
+  const [preloadedFaculties, setPreloadedFaculties] = useState({});
   const [dropdownOptions, setDropdownOptions] = useState(
     Array(NUM_INPUTS).fill([])
   );
@@ -46,6 +49,9 @@ const FormComponent = ({
   const [formError, setFormError] = useState(null);
 
   const [facultyInput, setFacultyInput] = useState("");
+  const [facultyOptions, setFacultyOptions] = useState(
+    Array(NUM_INPUTS).fill([])
+  );
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -59,7 +65,17 @@ const FormComponent = ({
       }
     };
 
+    const preloadFaculties = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/all-course-faculties/`);
+        setPreloadedFaculties(response.data);
+      } catch (error) {
+        console.error("Error preloading faculties:", error);
+      }
+    };
+
     preloadCourseCodes();
+    preloadFaculties();
   }, [apiUrl]);
 
   const handleCodeChange = async (index, value) => {
@@ -75,8 +91,13 @@ const FormComponent = ({
 
     // Reset the section when changing the course code
     const updatedDetails = [...courseDetails];
-    updatedDetails[index] = "";
+    updatedDetails[index] = [];
     setCourseDetails(updatedDetails);
+
+    // Reset preferred faculties for this course
+    const updatedPreferredFaculties = [...preferredFaculties];
+    updatedPreferredFaculties[index] = [];
+    setPreferredFaculties(updatedPreferredFaculties);
 
     if (capitalizedValue !== "") {
       const filteredSuggestions = preloadedCourseCodes.filter((code) =>
@@ -98,9 +119,22 @@ const FormComponent = ({
           newOptions[index] = response.data;
           return newOptions;
         });
+
+        // Update faculty options for this course
+        const courseFaculties = preloadedFaculties[capitalizedValue] || [];
+        setFacultyOptions((prev) => {
+          const newOptions = [...prev];
+          newOptions[index] = courseFaculties;
+          return newOptions;
+        });
       } catch (error) {
         console.error("Error fetching course details:", error);
         setDropdownOptions((prev) => {
+          const newOptions = [...prev];
+          newOptions[index] = [];
+          return newOptions;
+        });
+        setFacultyOptions((prev) => {
           const newOptions = [...prev];
           newOptions[index] = [];
           return newOptions;
@@ -112,28 +146,72 @@ const FormComponent = ({
         newSuggestions[index] = [];
         return newSuggestions;
       });
+      setFacultyOptions((prev) => {
+        const newOptions = [...prev];
+        newOptions[index] = [];
+        return newOptions;
+      });
     }
   };
 
   const handleDetailChange = (index, value) => {
     const updatedDetails = [...courseDetails];
-    updatedDetails[index] = value;
+    if (!updatedDetails[index]) {
+      updatedDetails[index] = [];
+    }
+    if (!updatedDetails[index].includes(value)) {
+      updatedDetails[index] = [...updatedDetails[index], value];
+    }
     setCourseDetails(updatedDetails);
     setIsEditing(true);
     setFormError(null);
   };
 
-  const handleClearSection = (index) => {
+  const handleRemoveSection = (index, section) => {
     const updatedDetails = [...courseDetails];
-    updatedDetails[index] = "";
+    updatedDetails[index] = updatedDetails[index].filter(
+      (detail) => detail !== section
+    );
     setCourseDetails(updatedDetails);
     setIsEditing(true);
     setFormError(null);
+  };
+
+  const handleClearAllSections = (index) => {
+    const updatedDetails = [...courseDetails];
+    updatedDetails[index] = [];
+    setCourseDetails(updatedDetails);
+    setIsEditing(true);
+    setFormError(null);
+  };
+
+  const handlePreferredFacultyChange = (index, value) => {
+    const updatedPreferredFaculties = [...preferredFaculties];
+    if (!updatedPreferredFaculties[index]) {
+      updatedPreferredFaculties[index] = [];
+    }
+    if (!updatedPreferredFaculties[index].includes(value)) {
+      updatedPreferredFaculties[index] = [
+        ...updatedPreferredFaculties[index],
+        value,
+      ];
+    }
+    setPreferredFaculties(updatedPreferredFaculties);
+    setIsEditing(true);
+  };
+
+  const handleRemovePreferredFaculty = (index, faculty) => {
+    const updatedPreferredFaculties = [...preferredFaculties];
+    updatedPreferredFaculties[index] = updatedPreferredFaculties[index].filter(
+      (f) => f !== faculty
+    );
+    setPreferredFaculties(updatedPreferredFaculties);
+    setIsEditing(true);
   };
 
   const validateForm = () => {
     const filledSections = courseDetails.filter(
-      (detail) => detail.trim() !== ""
+      (details) => details.length > 0 // Check if sections are present
     ).length;
 
     if (courseCodes.length === 4 && filledSections < 1) {
@@ -182,8 +260,8 @@ const FormComponent = ({
       className="container mx-auto p-8 space-y-10 dark:bg-gray-900 bg-slate-300 dark:text-gray-100 text-black rounded-lg shadow-2xl"
     >
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
             <h2 className="text-xl font-semibold text-blue-600 dark:text-purple-300">
               Course Selection
             </h2>
@@ -193,7 +271,7 @@ const FormComponent = ({
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className="grid grid-cols-2 gap-4"
+                className="grid grid-cols-3 gap-4"
               >
                 <div className="space-y-2">
                   <Label
@@ -214,11 +292,11 @@ const FormComponent = ({
                     htmlFor={`courseDetails${index}`}
                     className="text-gray-300 text-base"
                   >
-                    Section
+                    Sections
                   </Label>
                   <div className="flex items-center space-x-2">
                     <Select
-                      value={courseDetails[index] || ""}
+                      value=""
                       onValueChange={(value) =>
                         handleDetailChange(index, value)
                       }
@@ -227,7 +305,7 @@ const FormComponent = ({
                         id={`courseDetails${index}`}
                         className="bg-slate-100 dark:bg-gray-800 border-gray-700 text-base"
                       >
-                        <SelectValue placeholder="Select Section" />
+                        <SelectValue placeholder="Select Sections" />
                       </SelectTrigger>
                       <SelectContent className="bg-slate-100 dark:bg-slate-600 border-gray-700">
                         {dropdownOptions[index].map((detail) => (
@@ -242,12 +320,77 @@ const FormComponent = ({
                     </Select>
                     <button
                       type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleClearSection(index)}
+                      onClick={() => handleClearAllSections(index)}
+                      className="px-2 py-1 text-red-500 rounded hover:bg-red-600 hover:text-white"
                     >
-                      <span className="text-red-600">x</span>
+                      x
                     </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {courseDetails[index] &&
+                      courseDetails[index].map((section, sectionIndex) => (
+                        <div
+                          key={sectionIndex}
+                          className="bg-slate-200 dark:bg-gray-700 px-2 py-1 rounded-md flex items-center"
+                        >
+                          <span>{section}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSection(index, section)}
+                            className="ml-2 text-red-500 hover:text-red-700"
+                          >
+                            x
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor={`preferredFaculty${index}`}
+                    className="text-gray-300 text-base"
+                  >
+                    Faculties
+                  </Label>
+                  <Select
+                    value=""
+                    onValueChange={(value) =>
+                      handlePreferredFacultyChange(index, value)
+                    }
+                  >
+                    <SelectTrigger
+                      id={`preferredFaculty${index}`}
+                      className="bg-slate-100 dark:bg-gray-800 border-gray-700 text-base"
+                    >
+                      <SelectValue placeholder="Select Faculty" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-100 dark:bg-slate-600 border-gray-700">
+                      {facultyOptions[index].map((faculty) => (
+                        <SelectItem key={faculty} value={faculty}>
+                          {faculty}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {preferredFaculties[index] &&
+                      preferredFaculties[index].map((faculty, facultyIndex) => (
+                        <div
+                          key={facultyIndex}
+                          className="bg-slate-200 dark:bg-gray-700 px-2 py-1 rounded-md flex items-center"
+                        >
+                          <span>{faculty}</span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleRemovePreferredFaculty(index, faculty)
+                            }
+                            className="ml-2 text-red-500 hover:text-red-700"
+                          >
+                            x
+                          </button>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </motion.div>
@@ -264,8 +407,8 @@ const FormComponent = ({
                 Preferences
               </h2>
 
-              <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-8">
-                <div className="flex-1 space-y-2">
+              <div className="flex flex-col space-y-4">
+                <div className="space-y-2">
                   <Label
                     htmlFor="min-days"
                     className="text-gray-950 dark:text-gray-300 text-base"
@@ -286,7 +429,7 @@ const FormComponent = ({
                   />
                 </div>
 
-                <div className="flex-1 space-y-2">
+                <div className="space-y-2">
                   <Label
                     htmlFor="max-days"
                     className="text-gray-950 dark:text-gray-300 text-base"
@@ -326,7 +469,11 @@ const FormComponent = ({
                     placeholder="Enter faculty initials"
                     className="bg-slate-100 dark:bg-gray-800 border-gray-700"
                   />
-                  <Button onClick={handleAddFaculty} type="button" className="bg-purple-600 text-white">
+                  <Button
+                    onClick={handleAddFaculty}
+                    type="button"
+                    className="bg-purple-600 text-white"
+                  >
                     Add
                   </Button>
                 </div>
