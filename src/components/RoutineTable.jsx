@@ -148,22 +148,20 @@ const RoutineTable = ({
     return `${hours} hours ${minutesRemainder} minutes`;
   };
 
-  const handleTakeScreenshot = () => {
-    document.getElementById("routine-snap").classList.remove("hidden");
+  const handleTakeScreenshot = (index) => {
+    const elementId = `routine-snap-${index}`;
+    const element = document.getElementById(elementId);
+    element.classList.remove("hidden");
 
-    const element = document.getElementById("routine-snap");
-    if (!element) {
-      return;
-    }
     html2canvas(element)
       .then((canvas) => {
         let image = canvas.toDataURL("image/jpeg");
         const a = document.createElement("a");
         a.href = image;
-        a.download = "Routinebracu.jpeg";
+        a.download = `Routinebracu-${index + 1}.jpeg`;
         a.click();
 
-        document.getElementById("routine-snap").classList.add("hidden");
+        element.classList.add("hidden");
       })
       .catch((err) => {
         console.error("Couldn't Download!");
@@ -220,15 +218,15 @@ const RoutineTable = ({
                 ))}
             </tbody>
           </table>
+          <RoutineSnap routine={routine} id={`routine-snap-${index}`} />
           <div className="m-4 flex justify-center space-x-4">
             <button
-              onClick={handleTakeScreenshot}
+              onClick={() => handleTakeScreenshot(index)}
               className="bg-green-500 hover:bg-green-800 text-black hover:text-white font-bold py-2 px-4 rounded shadow-md transition-colors duration-300"
             >
               Download Routine
             </button>
           </div>
-          <RoutineSnap routine={routine} />
         </div>
       ))}
       {tooltipContent && (

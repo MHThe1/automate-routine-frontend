@@ -1,5 +1,5 @@
 
-const RoutineSnap = ({ routine }) => {
+const RoutineSnap = ({ id, routine }) => {
   const days = [
     "Sunday",
     "Monday",
@@ -61,7 +61,7 @@ const RoutineSnap = ({ routine }) => {
   };
 
   return (
-    <div id="routine-snap" className="hidden w-[1280px] h-auto px-14 py-20 bg-neutral-100 dark:bg-neutral-900">
+    <div id={id} className="hidden w-[1280px] h-auto px-14 py-20 bg-neutral-100 dark:bg-neutral-900">
       <div className="overflow-x-auto mb-6 border-dashed border-2 border-gray-400 dark:border-gray-200 rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
           <thead>
