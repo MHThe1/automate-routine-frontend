@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
 import { ThemeMode } from "./components/ToggleTheme";
-import { Analytics } from "@vercel/analytics/react";
 import useScrollPosition from "./hooks/useScrollPosition";
 import "./index.css";
 
@@ -129,7 +128,6 @@ function App() {
           />
         </main>
         <Footer />
-        <Analytics />
         {showGoToTopButton && (
           <button
             className="fixed bottom-16 right-14 w-8 h-8 bg-blue-500 text-white rounded-full shadow-lg transition hover:bg-blue-600 animate-bounce-once"

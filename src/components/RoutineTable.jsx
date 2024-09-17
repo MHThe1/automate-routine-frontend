@@ -1,16 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
+import { motion } from "framer-motion";
 import html2canvas from "html2canvas";
 import RoutineSnap from "./RoutineSnap";
 
-const RoutineTable = ({
-  routines,
-  currentPage,
-  totalPages,
-  totalRoutines,
-  handlePageChange,
-}) => {
+const RoutineTable = ({ routines, currentPage }) => {
   const [tooltipContent, setTooltipContent] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const routineRefs = useRef(routines.map(() => React.createRef()));
 
   const days = [
     "Sunday",
@@ -21,7 +17,6 @@ const RoutineTable = ({
     "Friday",
     "Saturday",
   ];
-
   const timeSlots = [
     "08:00 AM-09:20 AM",
     "09:30 AM-10:50 AM",
@@ -32,8 +27,7 @@ const RoutineTable = ({
     "05:00 PM-06:20 PM",
   ];
 
-  // Helper function to parse class lab schedule
-  const parseSchedule = (scheduleString) => {
+  const parseSchedule = useCallback((scheduleString) => {
     const schedules = [];
     const entries = scheduleString.split(",").map((entry) => entry.trim());
     entries.forEach((entry) => {
@@ -44,111 +38,104 @@ const RoutineTable = ({
       }
     });
     return schedules;
-  };
+  }, []);
 
-  const getFormattedText = (courseDetails, initial, roomNo) => {
+  const getFormattedText = useCallback((courseDetails, initial, roomNo) => {
     return `${courseDetails}<br />[${initial}] ${roomNo}`;
-  };
+  }, []);
 
-  const handleCellInteraction = (event, section) => {
+  const handleCellInteraction = useCallback((event, section) => {
     const rect = event.target.getBoundingClientRect();
     setTooltipPosition({
       x: rect.left + window.scrollX,
       y: rect.bottom + window.scrollY,
     });
     setTooltipContent(
-      <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg max-w-sm">
-        <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        className="p-4 bg-gray-300 dark:bg-gray-900 rounded-lg shadow-lg max-w-sm border border-gray-700"
+      >
+        <h3 className="text-lg font-bold mb-2 text-black dark:text-white">
           {section.courseCode} - {section.courseTitle}
         </h3>
         <div className="space-y-2">
-          <p className="text-sm">
-            <span className="font-bold text-gray-700 dark:text-gray-300">
-              Instructor:
-            </span>{" "}
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {section.empName} [{section.empShortName}]
-            </span>
-          </p>
-          <p className="text-sm">
-            <span className="font-bold text-gray-700 dark:text-gray-300">
-              Department:
-            </span>{" "}
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {section.deptName}
-            </span>
-          </p>
-          <p className="text-sm">
-            <span className="font-bold text-gray-700 dark:text-gray-300">
-              Pre-requisites:
-            </span>{" "}
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {section.preRequisiteCourses || "None"}
-            </span>
-          </p>
-          <p className="text-sm">
-            <span className="font-bold text-gray-700 dark:text-gray-300">
-              Credit:
-            </span>{" "}
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {section.courseCredit}
-            </span>
-          </p>
-          <p className="text-sm">
-            <span className="font-bold text-gray-700 dark:text-gray-300">
-              Exam Day:
-            </span>{" "}
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              {section.dayNo}
-            </span>
-          </p>
+          {[
+            {
+              label: "Instructor",
+              value: `${section.empName} [${section.empShortName}]`,
+            },
+            { label: "Department", value: section.deptName },
+            {
+              label: "Pre-requisites",
+              value: section.preRequisiteCourses || "None",
+            },
+            { label: "Credit", value: section.courseCredit },
+            { label: "Exam Day", value: section.dayNo },
+          ].map(({ label, value }) => (
+            <p key={label} className="text-sm">
+              <span className="font-bold text-gray-950 dark:text-gray-400">
+                {label}:{" "}
+              </span>
+              <span className="text-gray-800 font-semibold dark:text-gray-300">
+                {value}
+              </span>
+            </p>
+          ))}
         </div>
-      </div>
+      </motion.div>
     );
-  };
+  }, []);
 
-  const getCourseDetails = (day, time, routine) => {
-    if (Array.isArray(routine.courses)) {
-      for (let section of routine.courses) {
-        const schedules = parseSchedule(section.classLabSchedule);
-        for (let schedule of schedules) {
-          if (
-            schedule.day === day &&
-            time === `${schedule.startTime}-${schedule.endTime}`
-          ) {
-            const formattedText = getFormattedText(
-              section.courseDetails,
-              section.empShortName,
-              schedule.room
-            );
-            return (
-              <div
-                dangerouslySetInnerHTML={{ __html: formattedText }}
-                onMouseEnter={(e) => handleCellInteraction(e, section)}
-                onMouseLeave={() => setTooltipContent(null)}
-                onClick={(e) => handleCellInteraction(e, section)}
-                style={{ cursor: "pointer" }}
-              />
-            );
+  const getCourseDetails = useCallback(
+    (day, time, routine) => {
+      if (Array.isArray(routine.courses)) {
+        for (let section of routine.courses) {
+          const schedules = parseSchedule(section.classLabSchedule);
+          for (let schedule of schedules) {
+            if (
+              schedule.day === day &&
+              time === `${schedule.startTime}-${schedule.endTime}`
+            ) {
+              const formattedText = getFormattedText(
+                section.courseDetails,
+                section.empShortName,
+                schedule.room
+              );
+              return (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="py-2"
+                  dangerouslySetInnerHTML={{ __html: formattedText }}
+                  onMouseEnter={(e) => handleCellInteraction(e, section)}
+                  onMouseLeave={() => setTooltipContent(null)}
+                  onClick={(e) => handleCellInteraction(e, section)}
+                />
+              );
+            }
           }
         }
       }
-    }
-    return "";
-  };
+      return "";
+    },
+    [parseSchedule, getFormattedText, handleCellInteraction]
+  );
 
-  // Helper function to check if a row contains any class data
-  const rowHasClassData = (routine, time) => {
-    return days.some((day) => getCourseDetails(day, time, routine) !== "");
-  };
+  const rowHasClassData = useCallback(
+    (routine, time) => {
+      return days.some((day) => getCourseDetails(day, time, routine) !== "");
+    },
+    [days, getCourseDetails]
+  );
 
-  const minutesToHours = (minutes) => {
+  const minutesToHours = useCallback((minutes) => {
     const hours = Math.floor(minutes / 60);
     const minutesRemainder = minutes % 60;
     return `${hours} hours ${minutesRemainder} minutes`;
-  };
+  }, []);
 
-  const handleTakeScreenshot = (index) => {
+  const handleTakeScreenshot = useCallback((index) => {
     const elementId = `routine-snap-${index}`;
     const element = document.getElementById(elementId);
     element.classList.remove("hidden");
@@ -160,74 +147,113 @@ const RoutineTable = ({
         a.href = image;
         a.download = `Routinebracu-${index + 1}.jpeg`;
         a.click();
-
         element.classList.add("hidden");
       })
       .catch((err) => {
         console.error("Couldn't Download!");
       });
+  }, []);
+
+  const scrollToRoutine = (index) => {
+    routineRefs.current[index].current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-8 space-y-8">
+      <div className="flex justify-center space-x-2 overflow-x-auto pb-4">
+        {routines.map((_, index) => (
+          <motion.button
+            key={index}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => scrollToRoutine(index)}
+            className="px-4 py-2 bg-purple-500 text-white rounded-full focus:outline-none"
+          >
+            R{(currentPage - 1) * 10 + index + 1}
+          </motion.button>
+        ))}
+      </div>
       {routines.map((routine, index) => (
-        <div
+        <motion.div
           key={index}
-          className="overflow-x-auto mb-6 border border-dotted border-gray-400 dark:border-gray-200 rounded-lg shadow-lg"
+          ref={routineRefs.current[index]}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gray-50 dark:bg-slate-950 rounded-xl shadow-2xl overflow-hidden"
         >
-          <p className="text-md text-center text-slate-900 dark:text-stone-100 font-medium my-4">
-            <span className="text-red-400 font-bold">
-              #r{(currentPage - 1) * 10 + index + 1}
-            </span>{" "}
-            - {minutesToHours(routine.total_duration)} weekly,{" "}
-            {routine.total_days} days
-          </p>
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-stone-100 uppercase tracking-wider">
-                  Time
-                </th>
-                {days.map((day, idx) => (
-                  <th
-                    key={idx}
-                    className="px-6 py-3 text-center text-xs font-bold text-gray-400 dark:text-stone-100 uppercase tracking-wider"
-                  >
-                    {day}
+          <div className="flex justify-between bg-purple-700 p-4 text-white">
+            <h2 className="text-lg font-bold text-center">
+              Routine #{(currentPage - 1) * 10 + index + 1}
+            </h2>
+            <p className="text-center font-semibold">
+              {minutesToHours(routine.total_duration)} weekly,{" "}
+              {routine.total_days} days
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-50 dark:divide-gray-700 font-semibold">
+              <thead className="bg-gray-300 dark:bg-gray-950">
+                <tr>
+                  <th className="px-6 py-3 text-center text-xs text-black dark:text-white uppercase tracking-wider">
+                    Time
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-slate-900 text-black dark:text-stone-100 divide-y divide-gray-200">
-              {timeSlots
-                .filter((time) => rowHasClassData(routine, time))
-                .map((time, rowIndex) => (
-                  <tr key={rowIndex}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-stone-100 font-bold">
-                      {time}
-                    </td>
-                    {days.map((day, colIndex) => (
-                      <td
-                        key={colIndex}
-                        className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500 dark:text-stone-100 font-bold hover:scale-75 transition-transform duration-300"
-                      >
-                        {getCourseDetails(day, time, routine)}
+                  {days.map((day, idx) => (
+                    <th
+                      key={idx}
+                      className="px-6 py-3 text-center text-xs text-gray-800 dark:text-gray-300 uppercase tracking-wider"
+                    >
+                      {day}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-gray-200 dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-700">
+                {timeSlots
+                  .filter((time) => rowHasClassData(routine, time))
+                  .map((time, rowIndex) => (
+                    <tr
+                      key={rowIndex}
+                      className={
+                        rowIndex % 2 === 1 ? "bg-gray-300 dark:bg-gray-950" : ""
+                      }
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-black dark:text-white">
+                        {time}
                       </td>
-                    ))}
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-          <RoutineSnap routine={routine} id={`routine-snap-${index}`} />
-          <div className="m-4 flex justify-center space-x-4">
-            <button
+                      {days.map((day, colIndex) => (
+                        <td
+                          key={colIndex}
+                          className="px-6 py-2 whitespace-nowrap text-sm text-center text-black dark:text-white"
+                        >
+                          {getCourseDetails(day, time, routine)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <RoutineSnap
+            routine={routine}
+            id={`routine-snap-${index}`}
+            routineNo={(currentPage - 1) * 10 + index + 1}
+            timeDays={`${minutesToHours(routine.total_duration)} weekly, ${routine.total_days} days`}
+          />
+          <div className="p-4 flex justify-center dark:border-t dark:border-gray-700">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => handleTakeScreenshot(index)}
-              className="bg-green-500 hover:bg-green-800 text-black hover:text-white font-bold py-2 px-4 rounded shadow-md transition-colors duration-300"
+              className="bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-lg"
             >
               Download Routine
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       ))}
       {tooltipContent && (
         <div
@@ -237,7 +263,6 @@ const RoutineTable = ({
             top: `${tooltipPosition.y}px`,
             zIndex: 1000,
           }}
-          className="animate-fade-in transition-opacity duration-300"
         >
           {tooltipContent}
         </div>

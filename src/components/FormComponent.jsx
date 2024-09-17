@@ -13,13 +13,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AutoComplete from "./AutoComplete";
-
 import AvoidTimeSelector from "./AvoidTimeSelector";
 import GenerateRoutineButton from "./GenerateRoutineButton";
 
 const NUM_INPUTS = 6;
 
-const FormComponent = ({
+export default function FormComponent({
   courseCodes,
   courseDetails,
   preferredFaculties,
@@ -39,15 +38,14 @@ const FormComponent = ({
   handleFormSubmit,
   isEditing,
   setIsEditing,
-}) => {
+}) {
   const [preloadedCourseCodes, setPreloadedCourseCodes] = useState([]);
   const [preloadedFaculties, setPreloadedFaculties] = useState({});
   const [dropdownOptions, setDropdownOptions] = useState(
     Array(NUM_INPUTS).fill([])
   );
   const [suggestions, setSuggestions] = useState(Array(NUM_INPUTS).fill([]));
-  const [formError, setFormError] = useState(null);
-
+  const [formWarning, setFormWarning] = useState(null);
   const [facultyInput, setFacultyInput] = useState("");
   const [facultyOptions, setFacultyOptions] = useState(
     Array(NUM_INPUTS).fill([])
@@ -89,12 +87,10 @@ const FormComponent = ({
     setCourseCodes(filteredCodes);
     setIsEditing(true);
 
-    // Reset the section when changing the course code
     const updatedDetails = [...courseDetails];
     updatedDetails[index] = [];
     setCourseDetails(updatedDetails);
 
-    // Reset preferred faculties for this course
     const updatedPreferredFaculties = [...preferredFaculties];
     updatedPreferredFaculties[index] = [];
     setPreferredFaculties(updatedPreferredFaculties);
@@ -120,7 +116,6 @@ const FormComponent = ({
           return newOptions;
         });
 
-        // Update faculty options for this course
         const courseFaculties = preloadedFaculties[capitalizedValue] || [];
         setFacultyOptions((prev) => {
           const newOptions = [...prev];
@@ -152,6 +147,8 @@ const FormComponent = ({
         return newOptions;
       });
     }
+    setFormWarning(null);
+    validateForm();
   };
 
   const handleDetailChange = (index, value) => {
@@ -164,7 +161,8 @@ const FormComponent = ({
     }
     setCourseDetails(updatedDetails);
     setIsEditing(true);
-    setFormError(null);
+    setFormWarning(null);
+    validateForm();
   };
 
   const handleRemoveSection = (index, section) => {
@@ -174,7 +172,8 @@ const FormComponent = ({
     );
     setCourseDetails(updatedDetails);
     setIsEditing(true);
-    setFormError(null);
+    setFormWarning(null);
+    validateForm();
   };
 
   const handleClearAllSections = (index) => {
@@ -182,7 +181,8 @@ const FormComponent = ({
     updatedDetails[index] = [];
     setCourseDetails(updatedDetails);
     setIsEditing(true);
-    setFormError(null);
+    setFormWarning(null);
+    validateForm();
   };
 
   const handlePreferredFacultyChange = (index, value) => {
@@ -198,6 +198,8 @@ const FormComponent = ({
     }
     setPreferredFaculties(updatedPreferredFaculties);
     setIsEditing(true);
+    setFormWarning(null);
+    validateForm();
   };
 
   const handleRemovePreferredFaculty = (index, faculty) => {
@@ -207,25 +209,25 @@ const FormComponent = ({
     );
     setPreferredFaculties(updatedPreferredFaculties);
     setIsEditing(true);
+    setFormWarning(null);
+    validateForm();
   };
 
   const validateForm = () => {
     const filledSections = courseDetails.filter(
-      (details) => details.length > 0 // Check if sections are present
+      (details) => details.length > 0
     ).length;
-
-    if (courseCodes.length === 4 && filledSections < 1) {
-      setFormError("4c1s");
-      return false;
+    if (courseCodes.length === 3 && filledSections < 1) {
+      setFormWarning("3c1s");
+    } else if (courseCodes.length === 4 && filledSections < 1) {
+      setFormWarning("4c1s");
     } else if (courseCodes.length === 5 && filledSections < 2) {
-      setFormError("5c2s");
-      return false;
+      setFormWarning("5c2s");
     } else if (courseCodes.length === 6 && filledSections < 3) {
-      setFormError("6c3s");
-      return false;
+      setFormWarning("6c3s");
+    } else {
+      setFormWarning(null);
     }
-
-    setFormError(null);
     return true;
   };
 
@@ -235,6 +237,10 @@ const FormComponent = ({
       handleFormSubmit(e);
     }
   };
+
+  useEffect(() => {
+    validateForm();
+  }, [courseCodes, courseDetails]);
 
   const handleAddFaculty = () => {
     if (facultyInput.trim()) {
@@ -250,6 +256,47 @@ const FormComponent = ({
   const handleRemoveFaculty = (faculty) => {
     setAvoidFaculty(avoidFaculty.filter((f) => f !== faculty));
     setIsEditing(true);
+  };
+
+  const WarningMessage = ({ type }) => {
+    let message = "";
+    
+    if (type === "3c1s") {
+        message = "You're generating routines with 3 courses without any sections selected. This might result in an error as the combinations may get too large.";
+    } else if (type === "4c1s") {
+        message = "You're generating routines with 4 courses without any sections selected. This might result in an error as the combinations may get too large.";
+    } else if (type === "5c2s") {
+        message = "You're generating routines with 5 courses without any sections selected. This might result in an error as the combinations may get too large.";
+    } else if (type === "6c3s") {
+        message = "You're generating routines with 6 courses without any sections selected. This might result in an error as the combinations may get too large.";
+    }
+
+    return (
+      <div
+        className="bg-red-500 border-l-4 border-yellow-500 text-white p-4 mt-4"
+        role="alert"
+      >
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg
+              className="h-5 w-5 text-white"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm">{message}</p>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -506,42 +553,9 @@ const FormComponent = ({
             </div>
           </motion.div>
         </div>
-        {formError && (
-          <div className="text-red-500 text-sm mt-4 text-center">
-            {formError === "4c1s" && (
-              <>
-                {
-                  "If you want to generate a routine with 4 courses, please add at least 1 section."
-                }
-                <br />
-                {"Your request will fail without at least 1 section added."}
-              </>
-            )}
-            {formError === "5c2s" && (
-              <>
-                {
-                  "If you want to generate a routine with 5 courses, please add at least 2 sections."
-                }
-                <br />
-                {"Your request will fail without at least 2 sections added."}
-              </>
-            )}
-            {formError === "6c3s" && (
-              <>
-                {
-                  "If you want to generate a routine with 6 courses, please add at least 3 sections."
-                }
-                <br />
-                {"Your request will fail without at least 3 sections added."}
-              </>
-            )}
-          </div>
-        )}
-
+        {formWarning && <WarningMessage type={formWarning} />}
         <GenerateRoutineButton isEditing={isEditing} />
       </form>
     </motion.div>
   );
-};
-
-export default FormComponent;
+}

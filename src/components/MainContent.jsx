@@ -34,6 +34,7 @@ const MainContent = ({
 }) => {
   const loadingRef = useRef(null);
   const errorRef = useRef(null);
+  const topOfRoutinesRef = useRef(null);
 
   useEffect(() => {
     const scrollToRef = (ref) => {
@@ -50,24 +51,10 @@ const MainContent = ({
       scrollToRef(loadingRef);
     } else if (error) {
       scrollToRef(errorRef);
+    } else {
+      scrollToRef(topOfRoutinesRef);
     }
-  }, [loading, error]);
-
-  const [hasLoadedRoutines, setHasLoadedRoutines] = useState(false);
-  const topOfRoutinesRef = useRef(null);
-
-  useEffect(() => {
-    if (routines.length > 0 && !hasLoadedRoutines && topOfRoutinesRef.current) {
-      const element = topOfRoutinesRef.current;
-      const rect = element.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 50) {
-        // Only scroll if the element is not already visible
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-      // Set the flag to true after scrolling
-      setHasLoadedRoutines(true);
-    }
-  }, [routines, hasLoadedRoutines]);
+  }, [loading, error, isEditing]);
 
   useEffect(() => {
     if (topOfRoutinesRef.current) {
