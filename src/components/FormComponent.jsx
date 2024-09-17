@@ -455,12 +455,12 @@ const FormComponent = ({
               </h2>
 
               <div className="space-y-2">
-                <Label
+                <label
                   htmlFor="avoid-faculty"
-                  className="text-gray-950 dark:text-gray-300 text-base"
+                  className="dark:text-gray-300 text-black text-md"
                 >
-                  Avoid Faculty
-                </Label>
+                  Avoid Faculty:
+                </label>
                 <div className="flex space-x-2">
                   <Input
                     id="avoid-faculty"

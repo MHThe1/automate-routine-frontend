@@ -27,15 +27,19 @@ const AvoidTimeSelector = ({
   setIsEditing,
 }) => {
   const handleButtonClickTime = (value) => {
-    setAvoidTime((prev) => 
-      prev.includes(value) ? prev.filter((time) => time !== value) : [...prev, value]
+    setAvoidTime((prev) =>
+      prev.includes(value)
+        ? prev.filter((time) => time !== value)
+        : [...prev, value]
     );
     setIsEditing(true);
   };
 
   const handleButtonClickDay = (value) => {
-    setAvoidDay((prev) => 
-      prev.includes(value) ? prev.filter((day) => day !== value) : [...prev, value]
+    setAvoidDay((prev) =>
+      prev.includes(value)
+        ? prev.filter((day) => day !== value)
+        : [...prev, value]
     );
     setIsEditing(true);
   };
@@ -49,7 +53,12 @@ const AvoidTimeSelector = ({
     >
       {/* Avoid Time Period */}
       <div className="space-y-2">
-        <label className="dark:text-gray-300 text-black text-lg">Avoid Time:</label>
+        <label
+          htmlFor="avoid-time"
+          className="dark:text-gray-300 text-black text-md"
+        >
+          Avoid Time:
+        </label>
         <div className="flex flex-wrap gap-2">
           {timeOptions.map((option) => (
             <button
@@ -70,7 +79,12 @@ const AvoidTimeSelector = ({
 
       {/* Avoid Days */}
       <div className="space-y-2">
-        <label className="dark:text-gray-300 text-black text-lg">Avoid Day:</label>
+        <label
+          htmlFor="avoid-day"
+          className="dark:text-gray-300 text-black text-md"
+        >
+          Avoid Day:
+        </label>
         <div className="flex flex-wrap gap-2">
           {dayOptions.map((option) => (
             <button
