@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from "axios";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
+import About from "./components/About";
+import HowTo from "./components/HowTo";
 import { ThemeMode } from "./components/ToggleTheme";
 import useScrollPosition from "./hooks/useScrollPosition";
 import "./index.css";
+
 
 function App() {
   const [courseCodes, setCourseCodes] = useState([]);
@@ -92,60 +96,69 @@ function App() {
   const paginatedRoutines = routines.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <div id="mainbody" className={ThemeMode() ? "dark" : ""}>
-      <div className="flex flex-col min-h-screen bg-neutral-100 dark:bg-neutral-900 overflow-clip">
-      <Header />
+    <Router>
+      <div id="mainbody" className={ThemeMode() ? "dark" : ""}>
+        <div className="flex flex-col min-h-screen bg-neutral-100 dark:bg-neutral-900 overflow-clip">
+          <Header />
 
-        <main className="flex-grow lg:px-10 xl:px-16 2xl:px-20 font-quicksand font-smooth-antialiased">
-          <MainContent
-            routines={paginatedRoutines}
-            currentPage={currentPage}
-            totalPages={Math.ceil(totalRoutines / pageSize)}
-            totalRoutines={totalRoutines}
-            handlePageChange={handlePageChange}
-            handleFormSubmit={handleFormSubmit}
-            courseCodes={courseCodes}
-            courseDetails={courseDetails}
-            preferredFaculties={preferredFaculties}
-            minDays={minDays}
-            maxDays={maxDays}
-            avoidFaculty={avoidFaculty}
-            avoidTime={avoidTime}
-            avoidDay={avoidDay}
-            setCourseCodes={setCourseCodes}
-            setCourseDetails={setCourseDetails}
-            setPreferredFaculties={setPreferredFaculties}
-            setMinDays={setMinDays}
-            setMaxDays={setMaxDays}
-            setAvoidTime={setAvoidTime}
-            setAvoidFaculty={setAvoidFaculty}
-            setAvoidDay={setAvoidDay}
-            loading={loading}
-            error={error}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            setCurrentPage={setCurrentPage}
-          />
-        </main>
-        <Footer />
-        {showGoToTopButton && (
-          <button
-            className="fixed bottom-16 right-14 w-8 h-8 bg-blue-500 text-white rounded-full shadow-lg transition hover:bg-blue-600 animate-bounce-once"
-            onClick={scrollToTop}
-          >
-            ↑
-          </button>
-        )}
-        {showGoToBottomButton && (
-          <button
-            className="fixed bottom-16 right-4 w-8 h-8 bg-green-500 text-white rounded-full shadow-lg transition hover:bg-green-600 animate-bounce-once"
-            onClick={scrollToBottom}
-          >
-            ↓
-          </button>
-        )}
+          <main className="flex-grow lg:px-10 xl:px-16 2xl:px-20 font-quicksand font-smooth-antialiased">
+            <Routes>
+              <Route path="/" element={
+                <MainContent
+                  routines={paginatedRoutines}
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(totalRoutines / pageSize)}
+                  totalRoutines={totalRoutines}
+                  handlePageChange={handlePageChange}
+                  handleFormSubmit={handleFormSubmit}
+                  courseCodes={courseCodes}
+                  courseDetails={courseDetails}
+                  preferredFaculties={preferredFaculties}
+                  minDays={minDays}
+                  maxDays={maxDays}
+                  avoidFaculty={avoidFaculty}
+                  avoidTime={avoidTime}
+                  avoidDay={avoidDay}
+                  setCourseCodes={setCourseCodes}
+                  setCourseDetails={setCourseDetails}
+                  setPreferredFaculties={setPreferredFaculties}
+                  setMinDays={setMinDays}
+                  setMaxDays={setMaxDays}
+                  setAvoidTime={setAvoidTime}
+                  setAvoidFaculty={setAvoidFaculty}
+                  setAvoidDay={setAvoidDay}
+                  loading={loading}
+                  error={error}
+                  isEditing={isEditing}
+                  setIsEditing={setIsEditing}
+                  setCurrentPage={setCurrentPage}
+                />
+              } />
+              <Route path="/about" element={<About />} />
+              <Route path="/how-to" element={<HowTo />} />
+            </Routes>
+          </main>
+
+          <Footer />
+          {showGoToTopButton && (
+            <button
+              className="fixed bottom-16 right-14 w-8 h-8 bg-blue-500 text-white rounded-full shadow-lg transition hover:bg-blue-600 animate-bounce-once"
+              onClick={scrollToTop}
+            >
+              ↑
+            </button>
+          )}
+          {showGoToBottomButton && (
+            <button
+              className="fixed bottom-16 right-4 w-8 h-8 bg-green-500 text-white rounded-full shadow-lg transition hover:bg-green-600 animate-bounce-once"
+              onClick={scrollToBottom}
+            >
+              ↓
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

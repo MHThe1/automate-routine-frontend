@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import ToggleTheme from "./ToggleTheme";
 
 export default function Header() {
@@ -7,25 +8,17 @@ export default function Header() {
         {/* App Title (Left) */}
         <div className="md:flex-1 text-center md:text-left mb-2 md:mb-0">
           <h1 className="text-xl font-semibold dark:text-white">
-            <button
-              onClick={() => window.location.reload()}
-              className="focus:outline-none"
-            >
+            <Link to="/" className="focus:outline-none">
               Automate Routine
-            </button>
+            </Link>
           </h1>
         </div>
 
-        {/* Page Title (Center) */}
+        {/* Navigation Links (Center) */}
         <div className="flex-1 text-center mb-2 md:mb-0">
-          <span className="text-xl font-bold dark:text-white text-black">
-            <button
-              onClick={() => window.location.reload()}
-              className="focus:outline-none"
-            >
-              preregmate
-            </button>
-          </span>
+          <Link to="/" className="mx-2 hover:underline">Home</Link>
+          <Link to="/about" className="mx-2 hover:underline">About</Link>
+          <Link to="/how-to" className="mx-2 hover:underline">How To</Link>
         </div>
 
         {/* Dark/Light Mode Toggle (Right or Top Right) */}
