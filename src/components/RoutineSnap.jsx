@@ -1,12 +1,12 @@
 const RoutineSnap = ({ id, routine, routineNo, timeDays }) => {
   const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
   ];
   const timeSlots = [
     "08:00 AM-09:20 AM",
@@ -20,7 +20,7 @@ const RoutineSnap = ({ id, routine, routineNo, timeDays }) => {
 
   const parseSchedule = (scheduleString) => {
     const schedules = [];
-    const entries = scheduleString.split(",").map((entry) => entry.trim());
+    const entries = scheduleString.split("\n").map((entry) => entry.trim());
     entries.forEach((entry) => {
       const [day, time] = entry.split("(");
       if (day && time) {
