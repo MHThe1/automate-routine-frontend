@@ -278,7 +278,7 @@ export default function FormComponent({
   }
 
   const LoadingBanner = () => (
-    <div className="bg-blue-500 text-white p-4 mb-4 rounded-md">
+    <div className="bg-blue-500 text-white p-4 mb-4 animate-pulse rounded-md">
       <p className="text-center">Loading course data. Please wait...<br/>Working with free hosting, apologies for the delay.</p>
     </div>
   )
