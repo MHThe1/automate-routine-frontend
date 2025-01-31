@@ -103,7 +103,7 @@ const MainContent = ({
         <div className="mt-4">
           <div
             ref={topOfRoutinesRef}
-            className="mb-4 px-4 py-4 bg-white dark:bg-gray-900 text-slate-900 dark:text-stone-100 text-center rounded-lg shadow-md"
+            className="mb-4 px-4 py-4 bg-white dark:bg-slate-400/5 text-slate-900 dark:text-stone-100 text-center rounded-lg shadow-md"
           >
             <p className="font-quicksand font-bold text-xl text-green-600 dark:text-green-400">
               Cooked up {totalRoutines} routines for you!

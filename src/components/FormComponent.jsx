@@ -304,7 +304,7 @@ export default function FormComponent({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="container mx-auto p-8 space-y-10 dark:bg-gray-900 bg-slate-300 dark:text-gray-100 text-black rounded-lg shadow-2xl"
+      className="container mx-auto p-8 space-y-10 dark:bg-slate-400/5 bg-slate-300 dark:text-gray-100 text-black rounded-lg shadow-2xl"
     >
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -337,7 +337,7 @@ export default function FormComponent({
                 <div className="space-y-2">
                   <Label
                     htmlFor={`courseDetails${index}`}
-                    className="text-gray-300 text-base"
+                    className="text-black dark:text-gray-300 text-base"
                   >
                     Sections
                   </Label>
@@ -395,7 +395,7 @@ export default function FormComponent({
                 <div className="space-y-2">
                   <Label
                     htmlFor={`preferredFaculty${index}`}
-                    className="text-gray-300 text-base"
+                    className="text-black dark:text-gray-300 text-base"
                   >
                     Faculties
                   </Label>
