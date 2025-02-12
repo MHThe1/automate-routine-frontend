@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
 import About from "./components/About";
 import HowTo from "./components/HowTo";
+import Plug from "./components/Plug";
 import { ThemeMode } from "./components/ToggleTheme";
 import useScrollPosition from "./hooks/useScrollPosition";
 import "./index.css";
@@ -100,6 +101,7 @@ function App() {
       <div id="mainbody" className={ThemeMode() ? "dark" : ""}>
         <div className="flex flex-col min-h-screen bg-neutral-100 dark:bg-black overflow-clip">
           <Header />
+          <Plug />
 
           <main className="flex-grow lg:px-10 xl:px-16 2xl:px-20 font-quicksand font-smooth-antialiased">
             <Routes>
