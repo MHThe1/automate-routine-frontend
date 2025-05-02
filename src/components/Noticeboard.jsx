@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                All schedules are updated now. Thank you for your patience! Let me know if you find any bugs.
+                All schedules are updated now. Labs not showing up on the routines bug has been fixed. Thank you for your patience! Let me know if you find any bugs.
                 <br />
               </p>
             </div>
