@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                Under maintenance! Please come back at 12:30 AM. Updating CSE lab schedules.
+                All schedules are updated now. Thank you for your patience! Let me know if you find any bugs.
                 <br />
               </p>
             </div>
