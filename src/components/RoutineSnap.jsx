@@ -24,7 +24,14 @@ const RoutineSnap = ({ id, routine, routineNo, timeDays }) => {
     entries.forEach((entry) => {
       const [day, time] = entry.split("(");
       if (day && time) {
-        const [startTime, endTime, ...room] = time.slice(0, -1).split("-");
+        let [startTime, endTime, ...room] = time.slice(0, -1).split("-");
+        // Add leading zero for single-digit hours
+        if (startTime.match(/^\d:/)) {
+          startTime = "0" + startTime;
+        }
+        if (endTime.match(/^\d:/)) {
+          endTime = "0" + endTime;
+        }
         schedules.push({ day, startTime, endTime, room: room.join("-") });
       }
     });
@@ -63,10 +70,10 @@ const RoutineSnap = ({ id, routine, routineNo, timeDays }) => {
       className="hidden w-[1280px] h-auto px-14 py-20 bg-gray-50 dark:bg-slate-950"
     >
       <div className="overflow-x-auto mb-6 border-2 border-purple-700 rounded-xl">
-      <div className="flex justify-between bg-purple-700 p-4 text-white">
-        <h2 className="text-lg font-bold text-center">Routine #{routineNo}</h2>
-        <p className="text-center font-semibold">{timeDays}</p>
-      </div>
+        <div className="flex justify-between bg-purple-700 p-4 text-white">
+          <h2 className="text-lg font-bold text-center">Routine #{routineNo}</h2>
+          <p className="text-center font-semibold">{timeDays}</p>
+        </div>
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-300 dark:bg-gray-950">
             <tr>
