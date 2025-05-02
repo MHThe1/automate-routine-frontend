@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                Summer 2025 semester's routine is now available. However CSE Labs schedules are not available yet. Please check back later.
+                Summer 2025 semester's routine is now available. However CSE Lab schedules are not available yet. Please check back later.
                 <br />
               </p>
             </div>
