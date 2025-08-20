@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                Due to heavy traffic, we have switched to our alt backend! It&apos;s a little slower but it gets the job done! I appreciate your patience! Let me know if you find any bugs.
+                Fall 2025 data being Updated. Please check back later for the latest information. Might be updated by 11 PM!
                 <br />
               </p>
             </div>
