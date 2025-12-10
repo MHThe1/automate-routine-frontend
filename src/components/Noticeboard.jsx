@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                Spring 2026 data is being updated. Please stand by! 
+                Spring 2026 data is now updated. Please review the latest changes and let me know if you find any issues. 
                 <br />
               </p>
             </div>
