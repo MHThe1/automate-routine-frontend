@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                Fall 2025 data is live! Make your routines now 🙌, so glad I don't have to go through that anymore, finally! 
+                Spring 2025 data is being updated. Please stand by! 
                 <br />
               </p>
             </div>
