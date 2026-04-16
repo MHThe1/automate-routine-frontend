@@ -66,7 +66,7 @@ export default function About() {
       <h2 className="text-3xl font-bold mt-12 mb-6 text-blue-600 dark:text-purple-300 border-b-2 border-blue-600 dark:border-purple-300 pb-2">About the Developer</h2>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <p className="mb-6 text-lg">
-          I'm <span className='text-purple-500 font-bold'>Mehedi Hasan Tanvir</span>, the developer behind Automate Routine. I'm passionate about building efficient tools that make people's lives easier. You can reach out to me via email or connect with me on my social media platforms.
+          I'm <span className='text-purple-500 font-bold'>Mehedi Hasan Tanvir</span>, the developer behind Automate Routine. I'm passionate about building efficient tools that make people's lives easier. You can reach out to me via email or connect with me on my socials.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
