@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                Summer 2026 Schedule is now live! Check out the new courses and updates. Let me know if there are any issues. 
+                Fall 2026 schedule is being updated! Please check back later for the updated schedule.
                 <br />
               </p>
             </div>
