@@ -15,7 +15,7 @@ export default function Noticeboard() {
             </h3>
             <div className="mt-1">
               <p className="text-gray-700 dark:text-gray-300 animate-pulse">
-                Fall 2026 schedule is being updated! Please check back later for the updated schedule.
+                Fall 2026 schedule is now updated! Let me know if you find any bugs or discrepancies.
                 <br />
               </p>
             </div>
